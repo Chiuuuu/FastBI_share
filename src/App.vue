@@ -48,7 +48,12 @@
           </div>
         </div>
       </div>
-      <div class="pagination">
+      <div
+        class="pagination"
+        :style="{ opacity: showPageTab ? 1 : 0 }"
+        @mouseover="showPageTab = true"
+        @mouseleave="showPageTab = false"
+      >
         <div
           v-for="page in tabList"
           :key="page.id"
@@ -133,7 +138,8 @@ export default {
       headers: {}, // 请求头数据Password/TabId
       msg: "", // 获取已失效或者不存在提示信息
       code: "", // 状态码，判断显示图片
-      boxStyle: {}
+      boxStyle: {},
+      showPageTab: true //页签显示/隐藏
     };
   },
   mounted() {},
@@ -146,7 +152,7 @@ export default {
     let index = url.indexOf("share");
     this.url = url.slice(0, index) + "/admin/dev-api/" + url.slice(index);
     // 测试连接
-    this.url = "http://47.115.14.69:8080/share/yq6bIj";
+    // this.url = "http://47.115.14.69:8080/share/yq6bIj";
 
     console.log(this.url);
     axios.get(this.url).then(res => {
@@ -252,13 +258,24 @@ export default {
       if ("ontouchend" in document.body) {
         this.resetGraphsData();
       }
-      this.$nextTick(this.getBoxStyle);
+      this.$nextTick(() => {
+        this.getBoxStyle();
+        // pc端设置5s后隐藏页签栏
+        if (!("ontouchend" in document.body)) {
+          let timer = null;
+          timer = setTimeout(() => {
+            this.showPageTab = false;
+            clearTimeout(timer);
+            timer = null;
+          }, 5000);
+        }
+      });
     },
     resetGraphsData() {
       // 计算默认图表宽
       let chartWidth = document.body.clientWidth - spacing * 2;
       // 计算默认图表高度(宽高比5*4)
-      let chartHeight = chartWidth * 0.8;
+      let chartHeight = 400;
       // 版面重新计算计算图表坐标
       this.canvasMap.reduce((pre, cur) => {
         let chartSize = cur.setting.view;

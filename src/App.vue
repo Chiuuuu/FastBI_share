@@ -68,7 +68,7 @@
     <div class="pwdview" v-show="showBox === 'pwd'">
       <div class="title">
         <img class="img" src="./assets/images/矢量智能对象.png" alt="" />
-        <span>智能大数据分析平台</span>
+        <span class="text">智能大数据分析平台</span>
       </div>
       <div class="pwdbox">
         <div class="header">
@@ -142,34 +142,27 @@ export default {
       showPageTab: true //页签显示/隐藏
     };
   },
-  mounted() {},
+  mounted() {
+    window.onresize = () => {
+      if (Object.keys(this.screenData).length > 0) {
+        this.canvasMap = [];
+        if (this.password) {
+          this.submit();
+        } else {
+          this.getData();
+        }
+      }
+    };
+  },
   created() {
     let url = window.location.href;
-    // this.url = `http://192.168.0.38:8080/share/${url.substring(
-    //   url.lastIndexOf("/") + 1,
-    //   url.length
-    // )}`;
     let index = url.indexOf("share");
     this.url = url.slice(0, index) + "/admin/dev-api/" + url.slice(index);
     // 测试连接
-    // this.url = "http://47.115.14.69:8080/share/yq6bIj";
+    // this.url = "http://47.115.14.69:8080/share/rArqMj";
 
     console.log(this.url);
-    axios.get(this.url).then(res => {
-      // 大屏不存在或者已失效
-      if (res.data.code === 501 || res.data.code === 502) {
-        this.code = res.data.code;
-        this.showBox = "empty";
-        this.msg = res.data.msg;
-        return;
-      }
-      // 有设置密码
-      if (res.data.data === "needPwd") {
-        this.showBox = "pwd";
-        return;
-      }
-      this.setData(res.data.data);
-    });
+    this.getData();
   },
   computed: {
     // 画布面板的样式
@@ -186,6 +179,23 @@ export default {
     }
   },
   methods: {
+    getData() {
+      axios.get(this.url).then(res => {
+        // 大屏不存在或者已失效
+        if (res.data.code === 501 || res.data.code === 502) {
+          this.code = res.data.code;
+          this.showBox = "empty";
+          this.msg = res.data.msg;
+          return;
+        }
+        // 有设置密码
+        if (res.data.data === "needPwd") {
+          this.showBox = "pwd";
+          return;
+        }
+        this.setData(res.data.data);
+      });
+    },
     // 确认密码
     submit() {
       if (!this.password) {
@@ -273,7 +283,7 @@ export default {
     },
     resetGraphsData() {
       // 计算默认图表宽
-      let chartWidth = document.body.clientWidth - spacing * 2;
+      let chartWidth = window.screen.width - spacing * 2;
       // 计算默认图表高度(宽高比5*4)
       let chartHeight = 400;
       // 版面重新计算计算图表坐标
@@ -291,9 +301,9 @@ export default {
       }, null);
 
       // 画板宽度取屏幕宽度
-      this.pageSettings.width = document.body.clientWidth;
+      this.pageSettings.width = window.screen.width;
       // 画板高度默认屏幕高度
-      this.pageSettings.height = document.body.clientHeight;
+      this.pageSettings.height = window.screen.height;
       // 如果存在图表，画板高度取(图表默认高度+间距)*图表个数
       if (this.canvasMap.length > 0) {
         let height =

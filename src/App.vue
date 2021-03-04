@@ -36,6 +36,7 @@
                       ref="tables"
                       v-else-if="transform.setting.name === 've-tables'"
                       :table-data="transform.setting"
+                      :is-mobile="isMobile"
                     ></chart-tables>
                     <charts-factory
                       v-else
@@ -159,7 +160,7 @@ export default {
     let index = url.indexOf("share");
     this.url = url.slice(0, index) + "/admin/dev-api/" + url.slice(index);
     // 测试连接
-    // this.url = "http://47.115.14.69:8080/share/rArqMj";
+    // this.url = "http://47.115.14.69:8080/share/eEvQBf";
 
     console.log(this.url);
     this.getData();
@@ -176,6 +177,9 @@ export default {
             ? this.pageSettings.backgroundColor
             : `url(${this.pageSettings.backgroundSrc}) 0% 0% / 100% 100% no-repeat`
       };
+    },
+    isMobile() {
+      return "ontouchend" in document.body;
     }
   },
   methods: {
@@ -265,13 +269,13 @@ export default {
       }
       this.canvasMap = this.screenData.screenGraphs;
       // 移动端(支持触摸事件)
-      if ("ontouchend" in document.body) {
+      if (this.isMobile) {
         this.resetGraphsData();
       }
       this.$nextTick(() => {
         this.getBoxStyle();
         // pc端设置5s后隐藏页签栏
-        if (!("ontouchend" in document.body)) {
+        if (!this.isMobile) {
           let timer = null;
           timer = setTimeout(() => {
             this.showPageTab = false;

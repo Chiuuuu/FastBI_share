@@ -213,71 +213,74 @@
   position: relative;
   overflow: hidden;
 }
-.tables .chart-table:hover {
+.tables .chart-table.touch {
   overflow-x: scroll;
 }
-.tables .chart-table::-webkit-scrollbar {
+.tables .chart-table.pc:hover {
+  overflow-x: scroll;
+}
+.tables .chart-table.pc::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
-.tables .chart-table::-webkit-scrollbar-thumb {
+.tables .chart-table.pc::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.05);
   border-radius: 5px;
   -webkit-box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.1);
 }
-.tables .chart-table:hover::-webkit-scrollbar-thumb {
+.tables .chart-table.pc:hover::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 5px;
   -webkit-box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.1);
 }
-.tables .chart-table::-webkit-scrollbar-thumb:hover {
+.tables .chart-table.pc::-webkit-scrollbar-thumb:hover {
   background-color: rgba(0, 0, 0, 0.4);
   -webkit-box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.1);
 }
-.tables .chart-table::-webkit-scrollbar-track {
+.tables .chart-table.pc::-webkit-scrollbar-track {
   border-radius: 5px;
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
   background-color: white;
 }
-.tables .chart-table::-webkit-scrollbar-track:hover {
+.tables .chart-table.pc::-webkit-scrollbar-track:hover {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.4);
   background-color: rgba(0, 0, 0, 0.01);
 }
 .tables .chart-table .tbody {
   overflow: hidden;
 }
-.tables .chart-table .tbody:hover {
+.tables .chart-table .tbody.touch {
   overflow-y: scroll;
 }
-.tables .chart-table .tbody::-webkit-scrollbar {
+.tables .chart-table .tbody.pc:hover {
+  overflow-y: scroll;
+}
+.tables .chart-table .tbody.pc::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
-.tables .chart-table .tbody::-webkit-scrollbar-thumb {
+.tables .chart-table .tbody.pc::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.05);
   border-radius: 5px;
   -webkit-box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.1);
 }
-.tables .chart-table .tbody:hover::-webkit-scrollbar-thumb {
+.tables .chart-table .tbody.pc:hover::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 5px;
   -webkit-box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.1);
 }
-.tables .chart-table .tbody::-webkit-scrollbar-thumb:hover {
+.tables .chart-table .tbody.pc::-webkit-scrollbar-thumb:hover {
   background-color: rgba(0, 0, 0, 0.4);
   -webkit-box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.1);
 }
-.tables .chart-table .tbody::-webkit-scrollbar-track {
+.tables .chart-table .tbody.pc::-webkit-scrollbar-track {
   border-radius: 5px;
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
   background-color: white;
 }
-.tables .chart-table .tbody::-webkit-scrollbar-track:hover {
+.tables .chart-table .tbody.pc::-webkit-scrollbar-track:hover {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.4);
   background-color: rgba(0, 0, 0, 0.01);
-}
-.tables .chart-table .tbody .bin-scrollbar__wrap {
-  overflow-x: hidden;
 }
 .tables .chart-table .table-content {
   padding: 0 16px;

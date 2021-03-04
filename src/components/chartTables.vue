@@ -15,7 +15,7 @@
     </div>
     <div class="tables">
       <div
-        class="chart-table scroller"
+        :class="['chart-table', isMobile ? 'touch' : 'pc']"
         ref="charttable"
         @scroll="getScrollLeft"
         :style="{
@@ -43,7 +43,7 @@
           </thead>
         </table>
         <div
-          class="tbody"
+          :class="['tbody', isMobile ? 'touch' : 'pc']"
           :style="{ width: bodyWidth + 'px', height: bodyHeight + 'px' }"
         >
           <table
@@ -70,7 +70,7 @@
 
 <script>
 export default {
-  props: ["tableData"],
+  props: ["tableData", "isMobile"],
   data() {
     return {
       columns: [],

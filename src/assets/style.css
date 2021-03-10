@@ -9,6 +9,12 @@
   overflow: scroll;
   height: 100vh;
   width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.dv-screen.hasTab {
+  height: calc(100vh - 84px);
 }
 .dv-screen::-webkit-scrollbar {
   width: 10px;
@@ -77,8 +83,8 @@
 }
 .canvas {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  transform-origin: 0 0;
+  overflow: hidden;
 }
 .canvas::-webkit-scrollbar {
   width: 10px;
@@ -143,8 +149,8 @@
 }
 .pagination {
   position: fixed;
-  bottom: 0;
-  height: 80px;
+  bottom: 0px;
+  height: 60px;
   display: flex;
   background: white;
   color: black;
@@ -185,8 +191,8 @@
   position: relative;
   display: inline-block;
   width: 150px;
-  height: 75px;
-  line-height: 75px;
+  height: 55px;
+  line-height: 55px;
   margin: 3px 5px;
   text-align: center;
   background: white;
@@ -194,6 +200,9 @@
 }
 .pagination .page.current-select {
   background: #eeeeee;
+}
+.dv-text:hover {
+  border-right: none !important;
 }
 .dv-charts .dv-charts-null {
   display: flex;

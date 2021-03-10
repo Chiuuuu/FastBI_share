@@ -3,7 +3,7 @@
     <div v-show="Object.keys(screenData).length > 0">
       <div class="dv-screen" ref="dvScreen">
         <div class="box" :style="boxStyle">
-          <div class="canvas" :style="canvasPanelStyle">
+          <div class="canvas" :style="canvasPanelStyle" ref="canvas">
             <div class="canvas-panel">
               <template v-for="transform in canvasMap">
                 <div
@@ -114,14 +114,14 @@
 </template>
 
 <script>
-import "ant-design-vue/lib/input/style/css";
-import axios from "axios";
-import chartImage from "./components/chartImage.vue";
-import chartTables from "./components/chartTables.vue";
-import chartText from "./components/chartText.vue";
-import chartsFactory from "./components/chartsFactory.vue";
-import ChartNodata from "./components/Nodata.vue";
-const spacing = 20;
+import "ant-design-vue/lib/input/style/css"
+import axios from "axios"
+import chartImage from "./components/chartImage.vue"
+import chartTables from "./components/chartTables.vue"
+import chartText from "./components/chartText.vue"
+import chartsFactory from "./components/chartsFactory.vue"
+import ChartNodata from "./components/Nodata.vue"
+const spacing = 20
 export default {
   name: "App",
   data() {
@@ -141,29 +141,29 @@ export default {
       code: "", // 状态码，判断显示图片
       boxStyle: {},
       showPageTab: true //页签显示/隐藏
-    };
+    }
   },
   mounted() {
     window.onresize = () => {
       if (Object.keys(this.screenData).length > 0) {
-        this.canvasMap = [];
+        this.canvasMap = []
         if (this.password) {
-          this.submit();
+          this.submit()
         } else {
-          this.getData();
+          this.getData()
         }
       }
-    };
+    }
   },
   created() {
-    let url = window.location.href;
-    let index = url.indexOf("share");
-    this.url = url.slice(0, index) + "/admin/dev-api/" + url.slice(index);
+    let url = window.location.href
+    let index = url.indexOf("share")
+    this.url = url.slice(0, index) + "admin/dev-api/" + url.slice(index)
     // 测试连接
-    // this.url = "http://47.115.14.69:8080/share/eEvQBf";
+    // this.url = "http://47.115.14.69:8080/share/MNRB7j"
 
-    console.log(this.url);
-    this.getData();
+    console.log(this.url)
+    this.getData()
   },
   computed: {
     // 画布面板的样式
@@ -171,15 +171,15 @@ export default {
       return {
         width: `${this.pageSettings.width}px`,
         height: `${this.pageSettings.height}px`,
-        transform: `scale(${this.range}) translate3d(-50%, -50%, 0)`, // translate3d(0, 0, 0)
+        transform: `scale(${this.range}) translate3d(0, 0, 0)`, // translate3d(0, 0, 0)
         background:
           this.pageSettings.backgroundType === "1"
             ? this.pageSettings.backgroundColor
             : `url(${this.pageSettings.backgroundSrc}) 0% 0% / 100% 100% no-repeat`
-      };
+      }
     },
     isMobile() {
-      return "ontouchend" in document.body;
+      return "ontouchend" in document.body
     }
   },
   methods: {
@@ -187,55 +187,51 @@ export default {
       axios.get(this.url).then(res => {
         // 大屏不存在或者已失效
         if (res.data.code === 501 || res.data.code === 502) {
-          this.code = res.data.code;
-          this.showBox = "empty";
-          this.msg = res.data.msg;
-          return;
+          this.code = res.data.code
+          this.showBox = "empty"
+          this.msg = res.data.msg
+          return
         }
         // 有设置密码
         if (res.data.data === "needPwd") {
-          this.showBox = "pwd";
-          return;
+          this.showBox = "pwd"
+          return
         }
-        this.setData(res.data.data);
-      });
+        this.setData(res.data.data)
+      })
     },
     // 确认密码
     submit() {
       if (!this.password) {
-        return;
+        return
       }
       if (this.password.length > 6) {
-        this.error = true;
-        return;
+        this.error = true
+        return
       }
-      this.headers.Password = this.password;
+      this.headers.Password = this.password
       axios.get(this.url, { headers: this.headers }).then(res => {
         if (res.data.code === 500) {
-          this.error = true;
+          this.error = true
         } else {
-          this.showBox = "";
-          this.setData(res.data.data);
+          this.showBox = ""
+          this.setData(res.data.data)
         }
-      });
+      })
     },
     // 居中盒子样式
     getBoxStyle() {
-      let height = this.pageSettings.height;
-      if (this.$refs.dvScreen && this.$refs.dvScreen.clientHeight > height) {
-        height = this.$refs.dvScreen.clientHeight;
-      }
       this.boxStyle = {
-        width: `${this.pageSettings.width}px`,
-        height: `${height}px`
-      };
+        width: `${this.$refs.canvas.clientWidth * this.range}px`,
+        height: `${this.$refs.canvas.clientHeight * this.range}px` // 去掉系统底部栏高度
+      }
     },
     contentStyles(transformData) {
       return {
         width: transformData.width + "px",
         height: transformData.height + "px",
         transform: `translate3d(${transformData.x}px,${transformData.y}px,0)`
-      };
+      }
     },
     dvWrapperStyles(transformData) {
       return {
@@ -243,79 +239,84 @@ export default {
         width: transformData.width + "px",
         height: transformData.height + "px",
         padding: "10px 0"
-      };
+      }
     },
     // 切换页面
     toOtherPage(id) {
       if (this.tabSelect === id) {
-        return;
+        return
       }
-      this.tabSelect = id;
-      this.headers.TabId = this.tabSelect;
+      this.tabSelect = id
+      this.headers.TabId = this.tabSelect
       axios
         .get(this.url, {
           headers: this.headers
         })
         .then(res => {
-          this.setData(res.data.data);
-        });
+          this.setData(res.data.data)
+        })
     },
     setData(data) {
-      this.screenData = data;
-      this.pageSettings = this.screenData.setting;
+      this.screenData = data
+      this.pageSettings = this.screenData.setting
       if (this.tabList.length === 0) {
-        this.tabList = this.screenData.screenTabList;
-        this.tabSelect = this.tabList[0].id; // 默认显示第一页的内容
+        this.tabList = this.screenData.screenTabList
+        this.tabSelect = this.tabList[0].id // 默认显示第一页的内容
       }
-      this.canvasMap = this.screenData.screenGraphs;
+      this.canvasMap = this.screenData.screenGraphs
       // 移动端(支持触摸事件)
       if (this.isMobile) {
-        this.resetGraphsData();
+        this.resetGraphsData()
       }
       this.$nextTick(() => {
-        this.getBoxStyle();
+        this.getRange()
+        this.getBoxStyle()
         // pc端设置5s后隐藏页签栏
         if (!this.isMobile) {
-          let timer = null;
+          let timer = null
           timer = setTimeout(() => {
-            this.showPageTab = false;
-            clearTimeout(timer);
-            timer = null;
-          }, 5000);
+            this.showPageTab = false
+            clearTimeout(timer)
+            timer = null
+          }, 5000)
         }
-      });
+      })
     },
     resetGraphsData() {
       // 计算默认图表宽
-      let chartWidth = window.screen.width - spacing * 2;
+      let chartWidth = window.screen.width - spacing * 2
       // 计算默认图表高度(宽高比5*4)
-      let chartHeight = 400;
+      let chartHeight = 400
       // 版面重新计算计算图表坐标
       this.canvasMap.reduce((pre, cur) => {
-        let chartSize = cur.setting.view;
-        chartSize.width = chartWidth;
-        chartSize.height = chartHeight;
-        chartSize.x = spacing;
+        let chartSize = cur.setting.view
+        chartSize.width = chartWidth
+        chartSize.height = chartHeight
+        chartSize.x = spacing
         if (pre) {
-          chartSize.y = pre.setting.view.y + chartHeight + spacing;
+          chartSize.y = pre.setting.view.y + chartHeight + spacing
         } else {
-          chartSize.y = spacing;
+          chartSize.y = spacing
         }
-        return cur;
-      }, null);
+        return cur
+      }, null)
 
       // 画板宽度取屏幕宽度
-      this.pageSettings.width = window.screen.width;
+      this.pageSettings.width = window.screen.width
       // 画板高度默认屏幕高度
-      this.pageSettings.height = window.screen.height;
+      this.pageSettings.height = window.screen.height
       // 如果存在图表，画板高度取(图表默认高度+间距)*图表个数
       if (this.canvasMap.length > 0) {
         let height =
-          this.canvasMap.length * (chartHeight + spacing) + spacing * 2;
+          this.canvasMap.length * (chartHeight + spacing) + spacing * 2
         if (height > this.pageSettings.height) {
-          this.pageSettings.height = height;
+          this.pageSettings.height = height
         }
       }
+    },
+    getRange() {
+      let range = window.screen.width / this.pageSettings.width
+      this.range = Math.round(range * 100) / 100
     }
   },
   components: {
@@ -325,6 +326,6 @@ export default {
     chartsFactory,
     ChartNodata
   }
-};
+}
 </script>
 <style src="./assets/style.css"></style>

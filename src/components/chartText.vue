@@ -9,11 +9,11 @@
   />
 </template>
 <script>
-import aTextarea from "ant-design-vue/lib/input";
-import "ant-design-vue/lib/input/style/css";
+import Input from "ant-design-vue/lib/input"
+import "ant-design-vue/lib/input/style/css"
 export default {
   props: ["textData"],
-  components: { aTextarea },
+  components: { aTextarea: Input.TextArea },
   computed: {
     textTitleStyle() {
       return {
@@ -24,8 +24,8 @@ export default {
         background: "none",
         border: "none",
         ...this.textData.background
-      };
+      }
     }
   }
-};
+}
 </script>

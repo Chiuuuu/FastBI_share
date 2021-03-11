@@ -81,20 +81,20 @@ export default {
       tableWidth: "",
       bodyHeight: "",
       bodyWidth: ""
-    };
+    }
   },
   mounted() {
-    this.chartSize = this.tableData.view;
-    this.getTableData();
+    this.chartSize = this.tableData.view
+    this.getTableData()
   },
   methods: {
     getScrollLeft(e) {
-      this.bodyWidth = e.target.scrollLeft + this.showTableSize.tableX;
+      this.bodyWidth = e.target.scrollLeft + this.showTableSize.tableX
     },
     getSize() {
       // 控制每一列最小长度200
       // 计算表格宽度(表头表格宽度一致)
-      this.tableWidth = this.columns.length * 200;
+      this.tableWidth = this.columns.length * 200
       // 计算显示尺寸-charttable(比较表的尺寸和缩放框的大小)
       this.showTableSize = {
         tableX: Math.min(this.tableWidth, this.chartSize.width),
@@ -102,32 +102,40 @@ export default {
           this.$refs.charttable.clientHeight,
           this.chartSize.height - this.$refs.titles.offsetHeight
         )
-      };
+      }
       // 计算表格（不含表头）高度
       this.bodyHeight =
-        this.showTableSize.tableY - this.$refs.tableheader.clientHeight;
+        this.showTableSize.tableY - this.$refs.tableheader.clientHeight
     },
     getTableData() {
-      let apidata = this.tableData.api_data;
+      let apidata = this.tableData.api_data
       if (
         apidata.tableList.length > 0 &&
         apidata.source &&
         apidata.source.columns
       ) {
-        for (let item of apidata.source.columns) {
+        this.columns = apidata.source.columns
+        let rows = apidata.source.rows
+        let newRows = []
+        // 给列数据key重新排序
+        for (let row of rows) {
+          let newObj = {}
+          for (let col of this.columns) {
+            newObj[col.title] = row[col.title]
+          }
+          newRows.push(newObj)
         }
-        this.columns = apidata.source.columns;
-        this.rows = apidata.source.rows;
+        this.rows = newRows
         this.$nextTick(() => {
-          this.getSize();
-        });
-        return;
+          this.getSize()
+        })
+        return
       }
-      this.columns = apidata.columns;
-      this.rows = apidata.rows;
+      this.columns = apidata.columns
+      this.rows = apidata.rows
       this.$nextTick(() => {
-        this.getSize();
-      });
+        this.getSize()
+      })
     },
     customRow(index) {
       if (index % 2 === 1) {
@@ -141,7 +149,7 @@ export default {
           "white-space": this.tableData.config.table.ellipsis
             ? "normal"
             : "nowrap"
-        };
+        }
       } else {
         return {
           color: this.tableData.config.table.textStyle.color,
@@ -152,7 +160,7 @@ export default {
           "white-space": this.tableData.config.table.ellipsis
             ? "normal"
             : "nowrap"
-        };
+        }
       }
     }
   },
@@ -164,7 +172,7 @@ export default {
         borderWidth: this.imageData.background.borderWidth + "px",
         borderStyle: this.imageData.background.borderStyle,
         borderRadius: this.imageData.background.borderRadius + "px"
-      };
+      }
     },
     tableTitleStyle() {
       return {
@@ -172,7 +180,7 @@ export default {
         color: this.tableData.config.title.textStyle.color,
         fontSize: this.tableData.config.title.textStyle.fontSize + "px",
         textAlign: this.tableData.config.title.textAlign
-      };
+      }
     },
     HeaderStyle() {
       return {
@@ -181,8 +189,8 @@ export default {
         "background-color": this.tableData.config.header.backgroundColor,
         "font-size": this.tableData.config.header.textStyle.fontSize + "px",
         "font-weight": this.tableData.config.header.textStyle.fontWeight
-      };
+      }
     }
   }
-};
+}
 </script>

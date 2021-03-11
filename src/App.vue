@@ -52,8 +52,8 @@
       <div
         class="pagination"
         :style="{ opacity: showPageTab ? 1 : 0 }"
-        @mouseover="showPageTab = true"
-        @mouseleave="showPageTab = false"
+        @mouseover="handleTabShow"
+        @mouseleave="handleTabShow"
       >
         <div
           v-for="page in tabList"
@@ -160,7 +160,7 @@ export default {
     let index = url.indexOf("share")
     this.url = url.slice(0, index) + "admin/dev-api/" + url.slice(index)
     // 测试连接
-    // this.url = "http://47.115.14.69:8080/share/MNRB7j"
+    // this.url = "http://47.115.14.69:8080/share/jyYjQf"
 
     console.log(this.url)
     this.getData()
@@ -223,7 +223,7 @@ export default {
     getBoxStyle() {
       this.boxStyle = {
         width: `${this.$refs.canvas.clientWidth * this.range}px`,
-        height: `${this.$refs.canvas.clientHeight * this.range}px` // 去掉系统底部栏高度
+        height: `${this.$refs.canvas.clientHeight * this.range}px`
       }
     },
     contentStyles(transformData) {
@@ -259,6 +259,7 @@ export default {
     setData(data) {
       this.screenData = data
       this.pageSettings = this.screenData.setting
+      this.pageSettings.height = this.pageSettings.height + 50 // 防止底部栏显示的时候盖住控件滚动轴
       if (this.tabList.length === 0) {
         this.tabList = this.screenData.screenTabList
         this.tabSelect = this.tabList[0].id // 默认显示第一页的内容
@@ -317,6 +318,9 @@ export default {
     getRange() {
       let range = window.screen.width / this.pageSettings.width
       this.range = Math.round(range * 100) / 100
+    },
+    handleTabShow() {
+      this.showPageTab = !this.showPageTab
     }
   },
   components: {

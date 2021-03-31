@@ -14,7 +14,7 @@
       <span>{{ chartData.config.title.content }}</span>
     </div>
     <component
-      v-if="dataItem.columns.length > 0"
+      v-if="dataItem.columns && dataItem.columns.length > 0 && chartData.name !== 've-map'"
       v-bind:is="chartData.name"
       :data="dataItem"
       :width="width"
@@ -27,10 +27,26 @@
       :extend="chartExtend"
       :settings="chartData.apis"
     ></component>
+    <component
+      v-else
+      v-bind:is="chartData.name"
+      :data="dataItem"
+      :width="width"
+      :height="height"
+      ref="chart"
+      :legend-visible="chartData.config.legend && chartData.config.legend.show"
+      :title="chartData.chartType === 'v-ring' ? chartData.config.chartTitle : {}"
+      :extend="chartExtend"
+      :settings="chartData.apis"
+      :series="chartSeries"
+      :geo="geo"
+      :tooltip="mapToolTip"
+    ></component>
   </div>
 </template>
 
 <script>
+import omit from 'lodash/omit'
 export default {
   props: ["chartData"],
   data() {
@@ -41,7 +57,10 @@ export default {
       },
       chartExtend: {},
       width: "500px",
-      height: "400px"
+      height: "400px",
+      chartSeries: {},
+      geo: {},
+      mapToolTip: {}
     };
   },
   mounted() {
@@ -51,7 +70,24 @@ export default {
       height -= this.$refs.titles.clientHeight;
     }
     this.height = height + "px";
+    if (this.chartData.name === 've-map') {
+            this.chartExtend = { ...omit(this.chartData.config, ['series']) }
+           this.chartSeries = this.chartData.config.series
+            // 添加标签格式回调
+            this.chartSeries[0].label.formatter = function(params) {
+              return params.data.value[2].toFixed(2)
+            }
+            this.geo = this.chartData.config.geo
+            this.mapToolTip = this.chartData.config.tooltip
+            // 添加格式回调函数
+            this.mapToolTip.formatter = function(params) {
+              let data = params.data
+              return `${params.seriesName}<br />${data.name}：${data.value[2]}`
+            }
+    }
+          else {
     this.chartExtend = this.chartData.config;
+          }
     this.getChartData();
   },
   methods: {
@@ -117,6 +153,8 @@ export default {
         color: this.chartData.config.title.textStyle.color,
         fontSize: this.chartData.config.title.textStyle.fontSize + "px",
         textAlign: this.chartData.config.title.textAlign,
+        fontFamily: this.chartData.config.title.textStyle.fontFamily,
+        fontWeight: this.chartData.config.title.textStyle.fontWeight,
         height: "auto"
       };
     }

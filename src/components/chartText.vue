@@ -1,11 +1,11 @@
 <template>
   <a-textarea
     class="dv-text"
-    v-model="textData.config.title.content"
+    v-model="textData.config.title.total"
     ref="text"
     :style="textTitleStyle"
     :disabled="true"
-    :autoSize="{ minRows: 2, maxRows: 6 }"
+    :autoSize="{ minRows: 2, maxRows: 50 }"
   />
 </template>
 <script>
@@ -21,6 +21,8 @@ export default {
         color: this.textData.config.title.textStyle.color,
         fontSize: this.textData.config.title.textStyle.fontSize + "px",
         textAlign: this.textData.config.title.textAlign,
+        fontFamily: this.textData.config.title.textStyle.fontFamily,
+        fontWeight: this.textData.config.title.textStyle.fontWeight,
         background: "none",
         border: "none",
         ...this.textData.background
@@ -29,3 +31,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+.dv-text{
+    resize:none;
+}
+</style>

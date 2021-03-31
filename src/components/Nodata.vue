@@ -42,6 +42,8 @@ export default {
         color: this.config.title.textStyle.color,
         fontSize: this.config.title.textStyle.fontSize + "px",
         textAlign: this.config.title.textAlign,
+        fontFamily: this.config.title.textStyle.fontFamily,
+        fontWeight: this.config.title.textStyle.fontWeight,
         background: "none",
         border: "none",
         ...this.background

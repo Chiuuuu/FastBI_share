@@ -179,7 +179,9 @@ export default {
         padding: "0 10px",
         color: this.tableData.config.title.textStyle.color,
         fontSize: this.tableData.config.title.textStyle.fontSize + "px",
-        textAlign: this.tableData.config.title.textAlign
+        textAlign: this.tableData.config.title.textAlign,
+        fontFamily: this.tableData.config.title.textStyle.fontFamily,
+        fontWeight: this.tableData.config.title.textStyle.fontWeight,
       }
     },
     HeaderStyle() {

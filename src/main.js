@@ -5,6 +5,8 @@ import App from "./App";
 import VCharts from "v-charts";
 import "lib-flexible";
 
+import './font/font.css'
+
 Vue.use(VCharts);
 Vue.config.productionTip = false;
 

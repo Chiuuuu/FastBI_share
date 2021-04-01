@@ -1,7 +1,7 @@
 <template>
   <a-textarea
     class="dv-text"
-    v-model="textData.config.title.total"
+    v-model="textData.config.title.content"
     ref="text"
     :style="textTitleStyle"
     :disabled="true"

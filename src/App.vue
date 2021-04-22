@@ -19,6 +19,18 @@
                       v-if="transform.setting.isEmpty"
                       :config="transform.setting.config"
                     ></chart-nodata>
+                    <!--素材库-->
+                    <ChartMaterial
+                      v-else-if="transform.setting.name === 'material'"
+                      :url="transform.setting.url"
+                    ></ChartMaterial>
+                    <!--进度条-->
+                    <SteepBar
+                     v-else-if="transform.setting.name === 'steepBar'"
+                     :config="transform.setting.config"
+                     :background="transform.setting.background"
+                     :api-data="transform.setting.api_data"
+                    ></SteepBar>
                     <!-- 文本 -->
                     <chart-text
                       v-else-if="transform.setting.name === 've-text'"
@@ -121,6 +133,8 @@ import chartTables from "./components/chartTables.vue"
 import chartText from "./components/chartText.vue"
 import chartsFactory from "./components/chartsFactory.vue"
 import ChartNodata from "./components/Nodata.vue"
+import SteepBar from "./components/steepBar.vue"
+import ChartMaterial from "./components/Material.vue"
 const spacing = 20
 export default {
   name: "App",
@@ -160,7 +174,7 @@ export default {
     let index = url.indexOf("share")
     this.url = url.slice(0, index) + "admin/dev-api/" + url.slice(index)
     // 测试连接
-    // this.url = "http://47.115.14.69:8080/share/jyYjQf"
+    // this.url = "http://47.115.14.69:8090/share/bQ7rQ3"
 
     console.log(this.url)
     this.getData()
@@ -265,10 +279,10 @@ export default {
         this.tabSelect = this.tabList[0].id // 默认显示第一页的内容
       }
       this.canvasMap = this.screenData.screenGraphs
-      // 移动端(支持触摸事件)
-      if (this.isMobile) {
-        this.resetGraphsData()
-      }
+      // 移动端(支持触摸事件)// 移动端按原本样式显示
+    //   if (this.isMobile) {
+    //     this.resetGraphsData()
+    //   }
       this.$nextTick(() => {
         this.getRange()
         this.getBoxStyle()
@@ -328,7 +342,9 @@ export default {
     chartTables,
     chartText,
     chartsFactory,
-    ChartNodata
+    ChartNodata,
+    SteepBar,
+    ChartMaterial
   }
 }
 </script>

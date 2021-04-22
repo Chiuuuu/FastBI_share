@@ -1,38 +1,55 @@
 <template>
-  <a-textarea
-    class="dv-text"
-    v-model="textData.config.title.content"
-    ref="text"
-    :style="textTitleStyle"
-    :disabled="true"
-    :autoSize="{ minRows: 2, maxRows: 50 }"
-  />
+    <div class="text-box" :style="backgroundStyle">
+    <div
+      class="dv-text"
+      ref="text"
+      v-html="`<p>${textData.config.title.text}</p>`"
+      :style="contentStyle"
+    ></div>
+  </div>
 </template>
 <script>
-import Input from "ant-design-vue/lib/input"
-import "ant-design-vue/lib/input/style/css"
 export default {
   props: ["textData"],
-  components: { aTextarea: Input.TextArea },
   computed: {
-    textTitleStyle() {
+    backgroundStyle() {
+        debugger
       return {
-        padding: "0 10px",
+            background:
+              this.textData.background.backgroundType === '1'
+                ? this.textData.background.backgroundColor
+                : `url(${this.textData.background.backgroundSrc})`,
+            borderColor: this.textData.background.borderColor,
+            borderWidth: this.textData.background.borderWidth + 'px',
+            borderStyle: this.textData.background.borderStyle,
+            borderRadius: this.textData.background.borderRadius + 'px'
+          }
+    },
+        contentStyle() {
+      return {
+        padding: '0 10px',
         color: this.textData.config.title.textStyle.color,
-        fontSize: this.textData.config.title.textStyle.fontSize + "px",
+        fontSize: this.textData.config.title.textStyle.fontSize + 'px',
         textAlign: this.textData.config.title.textAlign,
         fontFamily: this.textData.config.title.textStyle.fontFamily,
-        fontWeight: this.textData.config.title.textStyle.fontWeight,
-        background: "none",
-        border: "none",
-        ...this.textData.background
+        fontWeight: this.textData.config.title.textStyle.fontWeight
       }
     }
   }
 }
 </script>
 <style scoped>
-.dv-text{
-    resize:none;
+.text-box {
+  height: 100%;
+  pointer-events: auto !important;
+  overflow: hidden;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+.dv-text {
+  resize: none;
+  padding: 2px 5px 10px 5px;
+  min-height: 30%;
+  cursor: default;
 }
 </style>

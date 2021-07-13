@@ -26,10 +26,10 @@
                     ></ChartMaterial>
                     <!--进度条-->
                     <SteepBar
-                     v-else-if="transform.setting.name === 'steepBar'"
-                     :config="transform.setting.config"
-                     :background="transform.setting.background"
-                     :api-data="transform.setting.api_data"
+                      v-else-if="transform.setting.name === 'steepBar'"
+                      :config="transform.setting.config"
+                      :background="transform.setting.background"
+                      :api-data="transform.setting.api_data"
                     ></SteepBar>
                     <!-- 文本 -->
                     <chart-text
@@ -49,6 +49,13 @@
                       v-else-if="transform.setting.name === 've-tables'"
                       :table-data="transform.setting"
                       :is-mobile="isMobile"
+                      @mouseenter.native="
+                        hideBar(
+                          transform.setting.view.y,
+                          transform.setting.view.height
+                        )
+                      "
+                      @mouseleave.native="existTab = true"
                     ></chart-tables>
                     <charts-factory
                       v-else
@@ -63,6 +70,7 @@
       </div>
       <div
         class="pagination"
+        v-show="existTab"
         :style="{ opacity: showPageTab ? 1 : 0 }"
         @mouseover="handleTabShow"
         @mouseleave="handleTabShow"
@@ -154,7 +162,8 @@ export default {
       msg: "", // 获取已失效或者不存在提示信息
       code: "", // 状态码，判断显示图片
       boxStyle: {},
-      showPageTab: true //页签显示/隐藏
+      showPageTab: true, //页签显示/隐藏
+      existTab: true // 页签元素显示/隐藏
     }
   },
   mounted() {
@@ -173,8 +182,10 @@ export default {
     let url = window.location.href
     let index = url.indexOf("share")
     this.url = url.slice(0, index) + "admin/dev-api/" + url.slice(index)
+    // 政数局链接
+    // this.url = "http://19.192.2.67:8085/admin/dev-api/" + url.slice(index)
     // 测试连接
-    // this.url = "http://47.115.14.69:8090/share/bQ7rQ3"
+    this.url = "http://47.115.14.69:8080/share/VbmyYn"
 
     console.log(this.url)
     this.getData()
@@ -233,11 +244,33 @@ export default {
         }
       })
     },
+    // 如果表格跟页签重叠，页签直接隐藏
+    hideBar(transformY, transformHeight) {
+      if (transformY + transformHeight >= this.pageSettings.height - 60) {
+        this.existTab = false
+      }
+    },
     // 居中盒子样式
     getBoxStyle() {
       this.boxStyle = {
         width: `${this.$refs.canvas.clientWidth * this.range}px`,
         height: `${this.$refs.canvas.clientHeight * this.range}px`
+      }
+      var docElm = document.querySelector("box")
+      if (docElm) {
+        if (docElm.requestFullscreen) {
+          // W3C
+          docElm.requestFullscreen()
+        } else if (docElm.mozRequestFullScreen) {
+          // FireFox
+          docElm.mozRequestFullScreen()
+        } else if (docElm.webkitRequestFullScreen) {
+          // Chrome等
+          docElm.webkitRequestFullScreen()
+        } else if (docElm.msRequestFullscreen) {
+          // IE11
+          docElm.msRequestFullscreen()
+        }
       }
     },
     contentStyles(transformData) {
@@ -273,16 +306,16 @@ export default {
     setData(data) {
       this.screenData = data
       this.pageSettings = this.screenData.setting
-      this.pageSettings.height = this.pageSettings.height + 50 // 防止底部栏显示的时候盖住控件滚动轴
+      this.pageSettings.height = this.pageSettings.height // 防止底部栏显示的时候盖住控件滚动轴
       if (this.tabList.length === 0) {
         this.tabList = this.screenData.screenTabList
         this.tabSelect = this.tabList[0].id // 默认显示第一页的内容
       }
       this.canvasMap = this.screenData.screenGraphs
       // 移动端(支持触摸事件)// 移动端按原本样式显示
-    //   if (this.isMobile) {
-    //     this.resetGraphsData()
-    //   }
+      //   if (this.isMobile) {
+      //     this.resetGraphsData()
+      //   }
       this.$nextTick(() => {
         this.getRange()
         this.getBoxStyle()

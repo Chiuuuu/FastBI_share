@@ -3,7 +3,7 @@
     <div
       class="dv-text"
       ref="text"
-      v-html="`<p>${textData.config.title.text}</p>`"
+      v-html="textData.config.title.text"
       :style="contentStyle"
     ></div>
   </div>
@@ -13,7 +13,6 @@ export default {
   props: ["textData"],
   computed: {
     backgroundStyle() {
-        debugger
       return {
             background:
               this.textData.background.backgroundType === '1'

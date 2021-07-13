@@ -185,7 +185,7 @@ export default {
     // 政数局链接
     // this.url = "http://19.192.2.67:8085/admin/dev-api/" + url.slice(index)
     // 测试连接
-    this.url = "http://47.115.14.69:8080/share/VbmyYn"
+    // this.url = "http://47.115.14.69:8080/share/VbmyYn"
 
     console.log(this.url)
     this.getData()
@@ -255,22 +255,6 @@ export default {
       this.boxStyle = {
         width: `${this.$refs.canvas.clientWidth * this.range}px`,
         height: `${this.$refs.canvas.clientHeight * this.range}px`
-      }
-      var docElm = document.querySelector("box")
-      if (docElm) {
-        if (docElm.requestFullscreen) {
-          // W3C
-          docElm.requestFullscreen()
-        } else if (docElm.mozRequestFullScreen) {
-          // FireFox
-          docElm.mozRequestFullScreen()
-        } else if (docElm.webkitRequestFullScreen) {
-          // Chrome等
-          docElm.webkitRequestFullScreen()
-        } else if (docElm.msRequestFullscreen) {
-          // IE11
-          docElm.msRequestFullscreen()
-        }
       }
     },
     contentStyles(transformData) {

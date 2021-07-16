@@ -9,16 +9,21 @@
                 <div
                   :key="transform.id"
                   class="preview-box"
-                  :style="contentStyles(transform.setting.view)"
+                  :style="contentStyles(transform.setting.view, transform.setting.title)"
                 >
                   <div
                     class="preview-wrap"
-                    :style="dvWrapperStyles(transform.setting.view)"
+                    :style="dvWrapperStyles(transform.setting.view, transform.setting.title)"
                   >
                     <chart-nodata
                       v-if="transform.setting.isEmpty"
                       :config="transform.setting.config"
                     ></chart-nodata>
+                    <!-- 图形 -->
+                    <ChartFigure
+                      v-else-if="transform.setting.name === 'figure'"
+                      :setting="transform.setting"
+                    />
                     <!--素材库-->
                     <ChartMaterial
                       v-else-if="transform.setting.name === 'material'"
@@ -143,6 +148,7 @@ import chartsFactory from "./components/chartsFactory.vue"
 import ChartNodata from "./components/Nodata.vue"
 import SteepBar from "./components/steepBar.vue"
 import ChartMaterial from "./components/Material.vue"
+import ChartFigure from "./components/Figure.vue"
 const spacing = 20
 export default {
   name: "App",
@@ -257,19 +263,31 @@ export default {
         height: `${this.$refs.canvas.clientHeight * this.range}px`
       }
     },
-    contentStyles(transformData) {
-      return {
-        width: transformData.width + "px",
-        height: transformData.height + "px",
-        transform: `translate3d(${transformData.x}px,${transformData.y}px,0)`
+    contentStyles(transformData, title) {
+      if (title === '直线') {
+        return {
+          width: transformData.width + 'px',
+          height: transformData.height + 'px',
+          transformOrigin: 'left center',
+          transform: `translate3d(${transformData.x}px,${
+            transformData.y
+          }px,0) rotate(${transformData.rotate || 0}deg)`
+        }
+      } else {
+        return {
+          width: transformData.width + 'px',
+          height: transformData.height + 'px',
+          transform: `translate3d(${transformData.x}px,${
+            transformData.y
+          }px,0)`
+        }
       }
     },
     dvWrapperStyles(transformData) {
       return {
         transform: "translateZ(0)",
         width: transformData.width + "px",
-        height: transformData.height + "px",
-        padding: "10px 0"
+        height: transformData.height + "px"
       }
     },
     // 切换页面
@@ -361,7 +379,8 @@ export default {
     chartsFactory,
     ChartNodata,
     SteepBar,
-    ChartMaterial
+    ChartMaterial,
+    ChartFigure
   }
 }
 </script>

@@ -102,6 +102,14 @@ export default {
         if (chartType == "high-pie" || chartType == "high-column") {
           return
         }
+        
+        // 矩形树图
+        if (this.chartData.chartType === 'v-treemap') {
+          const series = this.chartData.config.series[0] ? this.chartData.config.series[0] : this.chartData.config.series
+          this.handleTreemapFormatter(series, 'tooltip')
+          this.handleTreemapFormatter(series, 'label')
+          return
+        }
         let list = this.chartData.config.series.label.formatterSelect
         this.chartExtend.series.label.formatter = function(params) {
           if (type === "ve-line") {
@@ -134,6 +142,30 @@ export default {
     this.getChartData()
   },
   methods: {
+    // 处理矩形树图的formatter
+    handleTreemapFormatter(series, type) {
+      let flag = false
+      const apiData = this.chartData.api_data
+      if (apiData.measures[0]) {
+        const measureAlias = apiData.measures[0].alias
+        flag = series[type + 'ShowList'].includes(measureAlias)
+      }
+      series[type].formatter = params => {
+        let result = []
+        let target = params.data
+        while (target.parent) {
+          if (series[type + 'ShowList'].includes(target.column)) {
+            result.push(target.name)
+          }
+          target = target.parent
+        }
+        result = result.reverse()
+        if (flag) {
+          result.push(params.value[1])
+        }
+        return result.toString()
+      }
+    },
     getChartData() {
       // 只有度量的情况
       if (this.chartData.type === "2") {

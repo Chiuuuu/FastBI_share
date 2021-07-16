@@ -10,20 +10,20 @@ module.exports = {
     assetsSubDirectory: "static",
     assetsPublicPath: "/",
     proxyTable: {
-      //   "/api/*": {
-      //     //代理
-      //     target: "http://192.168.0.38:8080", //服务端地址和端口
-      //     changeOrigin: true, //启动代理
-      //     pathRewrite: {
-      //       //重写路径
-      //       "^/api": ""
-      //     }
-      //   }
+        "/admin/dev-api/*": {
+          //代理
+          target: "http://47.115.14.69:8091", //服务端地址和端口
+          changeOrigin: true, //启动代理
+          pathRewrite: {
+            //重写路径
+            "^admin/dev-api": ""
+          }
+        }
     },
 
     // Various Dev Server settings
     host: "localhost", // can be overwritten by process.env.HOST
-    port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    port: 8081, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,

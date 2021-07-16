@@ -45,6 +45,7 @@
       :extend="chartExtend"
       :settings="chartData.apis"
       :series="chartSeries"
+      :legend="chartLegend"
       :geo="geo"
       :tooltip="mapToolTip"
     ></component>
@@ -67,7 +68,9 @@ export default {
       height: "400px",
       chartSeries: {},
       geo: {},
-      mapToolTip: {}
+      mapToolTip: {},
+      chartLegend:{},
+      chartType:'',
     }
   },
   mounted() {
@@ -77,6 +80,7 @@ export default {
       height -= this.$refs.titles.clientHeight
     }
     this.height = height + "px"
+    this.chartType = this.chartData.chartType;
     if (this.chartData.name === "ve-map") {
       this.chartExtend = { ...omit(this.chartData.config, ["series"]) }
       this.chartSeries = this.chartData.config.series
@@ -84,7 +88,52 @@ export default {
       if (!this.chartData.apis.mapOrigin) {
         this.chartData.apis.mapOrigin = guangzhou
       }
-    } else {
+    } else if (this.chartData.name === 've-scatter') {
+      //散点图
+      let config = JSON.parse(JSON.stringify(this.chartData.config))
+      // tooltip显示
+      config.tooltip.formatter = function(params) {
+        let val = params.value
+        if (val.length < 6) {
+          return ''
+        }
+        return `${params.marker}<br/>
+                ${val[5]}：${val[2]}<br/>
+                ${val[3]}：${val[0]}<br/>
+                ${val[4]}：${val[1]}<br/>
+                `
+      }
+      
+      this.chartExtend = { ...omit(config, ['series', 'legend']) }
+      this.chartLegend = config.legend //图例
+      // series设置
+      let series = JSON.parse(JSON.stringify(config.series))
+      let data = series.data
+      let list = []
+      data.map(item => {
+        list.push(JSON.parse(JSON.stringify(series)))
+        list[list.length - 1].data = item.data
+        list[list.length - 1].name = item.label
+      })
+      list.forEach(item => {
+        // 图形属性 -- 散点颜色 -- 单色
+        this.chartData.apis.scatterColor === '0'
+          ? (item.color = '#68ABDA')
+          : delete item.color
+
+        // 散点图大小设置
+        let scatterSize = this.chartData.apis.scatterSize
+        if (scatterSize) {
+          let max = scatterSize === '0' ? this.chartData.apis.xMax : this.chartData.apis.yMax
+          item.symbolSize = function(val) {
+            let num = val[scatterSize]
+            return max === 0 ? 8 : (20 / max) * num + 8
+          }
+        }
+      })
+      console.log(list,'list------------')
+      this.chartSeries = list
+    }  else {
       this.chartExtend = this.chartData.config
       if (this.chartData.name === "ve-pie") {
         this.setPieFormatter()
@@ -127,12 +176,26 @@ export default {
           this.chartData.api_data.measures.length > 0 &&
           this.chartData.api_data.source
         ) {
-          this.dataItem = this.chartData.api_data.source
+          if(this.chartType === "v-scatter"){
+            //散点图的数据自定义显示
+            this.dataItem.columns = []
+            this.dataItem.rows = []
+          }else{
+            this.dataItem = this.chartData.api_data.source
+          }
           return
         }
       }
-      this.dataItem.columns = this.chartData.api_data.columns
-      this.dataItem.rows = this.chartData.api_data.rows
+
+      if (this.chartType === 'v-scatter') {
+        //散点图的数据自定义显示
+        this.dataItem.columns = []
+        this.dataItem.rows = []
+      } else {
+        this.dataItem.columns = this.chartData.api_data.columns
+        this.dataItem.rows = this.chartData.api_data.rows
+      }
+      
     },
     // 饼图显示内容格式拼接
     setPieFormatter() {
@@ -199,6 +262,11 @@ export default {
           return str.join("<br />")
         }
       }
+    },
+  },
+  watch:{
+    dataItem(){
+      console.log(JSON.parse(JSON.stringify(this.dataItem)),JSON.parse(JSON.stringify(this.chartData)))
     }
   },
   computed: {

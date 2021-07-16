@@ -62,6 +62,23 @@
                       "
                       @mouseleave.native="existTab = true"
                     ></chart-tables>
+                    <!-- 立体饼图 -->
+                    <high-charts
+                      v-else-if="transform.setting.name === 'high-pie'"
+                      :key="transform.id"
+                      :setting="transform.setting"
+                      :api-data="transform.setting.api_data"
+                      :background="transform.setting.background"
+                    ></high-charts>
+                    <!-- 矩形热力图 -->
+                    <chart-heart
+                      v-else-if="transform.setting.name === 've-heatmap'||transform.setting.name === 've-sun'"
+                      :key="transform.id"
+                      :view="transform.setting.view"
+                      :config="transform.setting.config"
+                      :api-data="transform.setting.api_data"
+                      :background="transform.setting.background"
+                    ></chart-heart>
                     <charts-factory
                       v-else
                       :chart-data="transform.setting"
@@ -149,6 +166,10 @@ import ChartNodata from "./components/Nodata.vue"
 import SteepBar from "./components/steepBar.vue"
 import ChartMaterial from "./components/Material.vue"
 import ChartFigure from "./components/Figure.vue"
+
+import HighCharts from './components/highcharts.vue'
+import ChartHeart from './components/chart-heat.vue'
+
 const spacing = 20
 export default {
   name: "App",
@@ -191,7 +212,7 @@ export default {
     // 政数局链接
     // this.url = "http://19.192.2.67:8085/admin/dev-api/" + url.slice(index)
     // 测试连接
-    // this.url = "http://47.115.14.69:8080/share/VbmyYn"
+    // this.url = "http://47.115.14.69:8090/share/E3eMVz"
 
     console.log(this.url)
     this.getData()
@@ -381,6 +402,8 @@ export default {
     SteepBar,
     ChartMaterial,
     ChartFigure
+    HighCharts,
+    ChartHeart,
   }
 }
 </script>

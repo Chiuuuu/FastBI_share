@@ -45,6 +45,7 @@
       :extend="chartExtend"
       :settings="chartData.apis"
       :series="chartSeries"
+      :legend="chartLegend"
       :geo="geo"
       :tooltip="mapToolTip"
     ></component>
@@ -53,6 +54,7 @@
 
 <script>
 import omit from "lodash/omit"
+import guangzhou from "../json/guangdong.json"
 export default {
   props: ["chartData"],
   data() {
@@ -66,7 +68,9 @@ export default {
       height: "400px",
       chartSeries: {},
       geo: {},
-      mapToolTip: {}
+      mapToolTip: {},
+      chartLegend:{},
+      chartType:'',
     }
   },
   mounted() {
@@ -76,67 +80,68 @@ export default {
       height -= this.$refs.titles.clientHeight
     }
     this.height = height + "px"
+    this.chartType = this.chartData.chartType;
     if (this.chartData.name === "ve-map") {
       this.chartExtend = { ...omit(this.chartData.config, ["series"]) }
       this.chartSeries = this.chartData.config.series
-      // 添加标签格式回调
-      this.chartSeries[0].label.formatter = function(params) {
-        return params.data.value[2].toFixed(2)
+      this.setMapFormatter()
+      if (!this.chartData.apis.mapOrigin) {
+        this.chartData.apis.mapOrigin = guangzhou
       }
-      this.geo = this.chartData.config.geo
-      this.mapToolTip = this.chartData.config.tooltip
-      // 添加格式回调函数
-      this.mapToolTip.formatter = function(params) {
-        let data = params.data
-        return `${params.seriesName}<br />${data.name}：${data.value[2]}`
+    } else if (this.chartData.name === 've-scatter') {
+      //散点图
+      let config = JSON.parse(JSON.stringify(this.chartData.config))
+      // tooltip显示
+      config.tooltip.formatter = function(params) {
+        let val = params.value
+        if (val.length < 6) {
+          return ''
+        }
+        return `${params.marker}<br/>
+                ${val[5]}：${val[2]}<br/>
+                ${val[3]}：${val[0]}<br/>
+                ${val[4]}：${val[1]}<br/>
+                `
       }
-    } else {
-      this.chartExtend = this.chartData.config
-      // 保留两位小数
-      if (
-        this.chartData.name !== "ve-gauge" &&
-        this.chartData.name !== "ve-ring"
-      ) {
-        let type = this.chartData.name
-        let chartType = this.chartData.chartType
-        if (chartType == "high-pie" || chartType == "high-column") {
-          return
-        }
-        
-        // 矩形树图
-        if (this.chartData.chartType === 'v-treemap') {
-          const series = this.chartData.config.series[0] ? this.chartData.config.series[0] : this.chartData.config.series
-          this.handleTreemapFormatter(series, 'tooltip')
-          this.handleTreemapFormatter(series, 'label')
-          return
-        }
-        let list = this.chartData.config.series.label.formatterSelect
-        this.chartExtend.series.label.formatter = function(params) {
-          if (type === "ve-line") {
-            return params.data[1].toFixed(2)
-          } else if (type === "ve-pie") {
-            // 嵌套饼图不需要拼接显示内容
-            if (chartType === "v-multiPie") {
-              return params.data.value.toFixed(2)
-            }
-            let str = []
-            list.forEach(item => {
-              let val = params[item]
-              if (typeof val === "number") {
-                val = +parseFloat(val).toFixed(2)
-              }
-              if (item === "percent") {
-                val += "%"
-              }
-              str.push(val)
-            })
-            return str.join(" ")
-          } else if (type === "ve-radar") {
-            return params.value.toFixed(2)
-          } else {
-            return params.data.toFixed(2)
+      
+      this.chartExtend = { ...omit(config, ['series', 'legend']) }
+      this.chartLegend = config.legend //图例
+      // series设置
+      let series = JSON.parse(JSON.stringify(config.series))
+      let data = series.data
+      let list = []
+      data.map(item => {
+        list.push(JSON.parse(JSON.stringify(series)))
+        list[list.length - 1].data = item.data
+        list[list.length - 1].name = item.label
+      })
+      list.forEach(item => {
+        // 图形属性 -- 散点颜色 -- 单色
+        this.chartData.apis.scatterColor === '0'
+          ? (item.color = '#68ABDA')
+          : delete item.color
+
+        // 散点图大小设置
+        let scatterSize = this.chartData.apis.scatterSize
+        if (scatterSize) {
+          let max = scatterSize === '0' ? this.chartData.apis.xMax : this.chartData.apis.yMax
+          item.symbolSize = function(val) {
+            let num = val[scatterSize]
+            return max === 0 ? 8 : (20 / max) * num + 8
           }
         }
+      })
+      console.log(list,'list------------')
+      this.chartSeries = list
+    } else if (this.chartData.chartType === 'v-treemap') { // 矩形树图
+      const series = this.chartData.config.series[0] ? this.chartData.config.series[0] : this.chartData.config.series
+      this.handleTreemapFormatter(series, 'tooltip')
+      this.handleTreemapFormatter(series, 'label')
+      return
+    } else {
+      this.chartExtend = this.chartData.config
+      if (this.chartData.name === "ve-pie") {
+        this.setPieFormatter()
       }
     }
     this.getChartData()
@@ -200,12 +205,97 @@ export default {
           this.chartData.api_data.measures.length > 0 &&
           this.chartData.api_data.source
         ) {
-          this.dataItem = this.chartData.api_data.source
+          if(this.chartType === "v-scatter"){
+            //散点图的数据自定义显示
+            this.dataItem.columns = []
+            this.dataItem.rows = []
+          }else{
+            this.dataItem = this.chartData.api_data.source
+          }
           return
         }
       }
-      this.dataItem.columns = this.chartData.api_data.columns
-      this.dataItem.rows = this.chartData.api_data.rows
+
+      if (this.chartType === 'v-scatter') {
+        //散点图的数据自定义显示
+        this.dataItem.columns = []
+        this.dataItem.rows = []
+      } else {
+        this.dataItem.columns = this.chartData.api_data.columns
+        this.dataItem.rows = this.chartData.api_data.rows
+      }
+      
+    },
+    // 饼图显示内容格式拼接
+    setPieFormatter() {
+      let list = this.chartExtend.series.label.formatterSelect || []
+      this.chartExtend.series.label.formatter = function(params) {
+        let str = []
+        list.forEach(item => {
+          let val = params[item]
+          if (!val) {
+            return
+          }
+          if (typeof val === "number") {
+            val = +parseFloat(val)
+          }
+          if (item === "percent") {
+            val += "%"
+          }
+          str.push(val)
+        })
+        return str.join(" ")
+      }
+    },
+    // 地图显示内容格式拼接
+    setMapFormatter() {
+      for (let series of this.chartSeries) {
+        // 指标内容
+        let isShowAreaName = series.pointShowList.some(
+          str => str.search("地区名") > -1
+        )
+        let orient = series.label.normal.orient
+        series.label.normal.formatter = function(params) {
+          if (!params.data) {
+            return isShowAreaName ? params.name : ""
+          }
+          let str = []
+          series.pointShowList.forEach(item => {
+            let val = params.data[item]
+            if (!val) {
+              return
+            }
+            if (typeof val === "number") {
+              val = +parseFloat(val).toFixed(2)
+            }
+            str.push(val)
+          })
+          str = orient === "vertical" ? str.join("\n") : str.join(":")
+          return str
+        }
+        series.tooltip.formatter = function(params) {
+          if (!params.data) {
+            return params.name
+          }
+          let str = []
+          series.tooltipShowList.forEach(item => {
+            let val = params.data[item]
+            if (!val) {
+              return
+            }
+            if (typeof val === "number") {
+              val = +parseFloat(val).toFixed(2)
+            }
+            str.push(`${item}：${val}`)
+          })
+          return str.join("<br />")
+        }
+      }
+    },
+  },
+  watch:{
+    dataItem(){
+      console.log(JSON.parse(JSON.stringify(this.dataItem)),JSON.parse(JSON.stringify(this.chartData)))
     }
   },
   computed: {

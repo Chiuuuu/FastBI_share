@@ -185,7 +185,7 @@ export default {
     // 政数局链接
     // this.url = "http://19.192.2.67:8085/admin/dev-api/" + url.slice(index)
     // 测试连接
-    // this.url = "http://47.115.14.69:8080/share/VbmyYn"
+    // this.url = "http://47.115.14.69:8090/share/FrQZZ3"
 
     console.log(this.url)
     this.getData()

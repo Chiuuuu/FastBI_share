@@ -401,7 +401,7 @@ export default {
     ChartNodata,
     SteepBar,
     ChartMaterial,
-    ChartFigure
+    ChartFigure,
     HighCharts,
     ChartHeart,
   }

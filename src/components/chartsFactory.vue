@@ -134,10 +134,10 @@ export default {
       console.log(list,'list------------')
       this.chartSeries = list
     } else if (this.chartData.chartType === 'v-treemap') { // 矩形树图
+      this.chartExtend = this.chartData.config
       const series = this.chartData.config.series[0] ? this.chartData.config.series[0] : this.chartData.config.series
       this.handleTreemapFormatter(series, 'tooltip')
       this.handleTreemapFormatter(series, 'label')
-      return
     } else {
       this.chartExtend = this.chartData.config
       if (this.chartData.name === "ve-pie") {
@@ -292,11 +292,6 @@ export default {
         }
       }
     },
-  },
-  watch:{
-    dataItem(){
-      console.log(JSON.parse(JSON.stringify(this.dataItem)),JSON.parse(JSON.stringify(this.chartData)))
-    }
   },
   computed: {
     chartBackgroundStyle() {

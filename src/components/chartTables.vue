@@ -29,6 +29,13 @@
           ref="tableheader"
           :style="{ width: tableWidth + 'px' }"
         >
+          <colgroup>
+            <col
+              v-for="(value, index) in colWidths"
+              :key="index"
+              :style="{ width: value + 'px' }"
+            />
+          </colgroup>
           <thead>
             <tr>
               <th
@@ -51,6 +58,13 @@
             ref="tablebody"
             :style="{ width: tableWidth + 'px' }"
           >
+            <colgroup>
+              <col
+                v-for="(value, index) in colWidths"
+                :key="index"
+                :style="{ width: value + 'px' }"
+              />
+            </colgroup>
             <tr v-for="(row, index) in rows" :key="index">
               <td
                 :style="customRow(index)"
@@ -80,7 +94,8 @@ export default {
       showTableSize: {},
       tableWidth: "",
       bodyHeight: "",
-      bodyWidth: ""
+      bodyWidth: "",
+      colWidths:[],
     }
   },
   mounted() {
@@ -91,21 +106,36 @@ export default {
     getScrollLeft(e) {
       this.bodyWidth = e.target.scrollLeft + this.showTableSize.tableX
     },
-    getSize() {
-      // 控制每一列最小长度200
-      // 计算表格宽度(表头表格宽度一致)
-      this.tableWidth = this.columns.length * 200
-      // 计算显示尺寸-charttable(比较表的尺寸和缩放框的大小)
-      this.showTableSize = {
-        tableX: Math.min(this.tableWidth, this.chartSize.width),
-        tableY: Math.min(
-          this.$refs.charttable.clientHeight,
-          this.chartSize.height - this.$refs.titles.offsetHeight
-        )
-      }
-      // 计算表格（不含表头）高度
-      this.bodyHeight =
-        this.showTableSize.tableY - this.$refs.tableheader.clientHeight
+    async getSize() {
+      // 计算表格每列宽度
+      await this.getColWidths()
+
+      const title = this.$refs.titles
+
+      // 计算表宽(单元格宽度求和)
+      this.tableWidth = this.colWidths.reduce((total, value) => {
+        return total + value
+      })
+      
+      this.$nextTick(()=>{
+        // 计算显示尺寸-charttable(比较表的尺寸和缩放框的大小)
+        let currentChartSize = this.chartSize.height
+        if (this.tableData.config.title.show && title) {
+          currentChartSize -= title.offsetHeight
+        }
+        this.showTableSize = {
+          tableX: Math.min(this.tableWidth, this.chartSize.width),
+          tableY: 
+            Math.min(
+              this.$refs.tablebody.clientHeight +
+                this.$refs.tableheader.clientHeight,
+              currentChartSize
+            ) // 去掉滚动轴占高
+        }
+        // 计算表格（不含表头）高度
+        this.bodyHeight =
+          this.showTableSize.tableY - this.$refs.tableheader.clientHeight
+      })
     },
     getTableData() {
       let apidata = this.tableData.api_data
@@ -136,6 +166,45 @@ export default {
       this.$nextTick(() => {
         this.getSize()
       })
+    },
+    // 计算单元格宽度
+    async getColWidths() {
+      this.colWidths = []
+      for (let row of this.rows) {
+        let index = 0
+        for (let col of this.columns) {
+          // 计算每个单元格的大小（取每一列最长的宽度作为单位格宽度）
+          if (!this.colWidths[index]) {
+            // 默认取表头宽度
+            this.colWidths[index] =
+              this.getActaulLen(col.title) *
+                this.tableData.config.header.textStyle.fontSize *
+                0.6 +
+              30
+          }
+          let colWidth =
+            this.getActaulLen(row[col.key]) *
+              this.tableData.config.table.textStyle.fontSize *
+              0.6 +
+            30
+          if (colWidth > this.colWidths[index]) {
+            this.colWidths[index] = colWidth
+          }
+          index++
+        }
+      }
+      return true
+    },
+    // 汉字转换成两个字符长度
+    getActaulLen(value) {
+      if (!value) {
+        return 0
+      }
+      let str = value
+      if (typeof str === 'number') {
+        str = str.toString()
+      }
+      return str.replace(/[\u0391-\uFFE5]/g, 'aa').length
     },
     customRow(index) {
       if (index % 2 === 1) {

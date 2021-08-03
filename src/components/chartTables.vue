@@ -2,7 +2,7 @@
   <div
     class="dv-tables"
     style="width: 100%;height:100%;"
-    :style="backgroundStyle"
+    :style="imageBackgroundStyle"
     ref="wrap"
   >
     <div
@@ -15,7 +15,7 @@
     </div>
     <div class="tables">
       <div
-        :class="['chart-table', isMobile ? 'touch' : 'pc']"
+        :class="['chart-table', 'xscroll', isMobile ? 'touch' : 'pc']"
         ref="charttable"
         @scroll="getScrollLeft"
         :style="{
@@ -54,7 +54,7 @@
           :style="{ width: bodyWidth + 'px', height: bodyHeight + 'px' }"
         >
           <table
-            class="table-content table-body scrollbar"
+            class="table-content table-body yscroll"
             ref="tablebody"
             :style="{ width: tableWidth + 'px' }"
           >
@@ -236,11 +236,11 @@ export default {
   computed: {
     imageBackgroundStyle() {
       return {
-        backgroundColor: this.imageData.background.backgroundColor,
-        borderColor: this.imageData.background.borderColor,
-        borderWidth: this.imageData.background.borderWidth + "px",
-        borderStyle: this.imageData.background.borderStyle,
-        borderRadius: this.imageData.background.borderRadius + "px"
+        backgroundColor: this.tableData.background.backgroundColor,
+        borderColor: this.tableData.background.borderColor,
+        borderWidth: this.tableData.background.borderWidth + "px",
+        borderStyle: this.tableData.background.borderStyle,
+        borderRadius: this.tableData.background.borderRadius + "px"
       }
     },
     tableTitleStyle() {

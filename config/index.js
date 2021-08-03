@@ -12,7 +12,7 @@ module.exports = {
     proxyTable: {
         "/admin/dev-api/*": {
           //代理
-          target: "http://47.115.14.69:8091", //服务端地址和端口
+          target: "http://47.115.14.69:8081", //服务端地址和端口
           changeOrigin: true, //启动代理
           pathRewrite: {
             //重写路径

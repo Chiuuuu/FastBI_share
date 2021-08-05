@@ -1,110 +1,135 @@
 <template>
   <div id="app">
-    <div v-show="Object.keys(screenData).length > 0">
+    <div class="screenview" v-show="Object.keys(screenData).length > 0">
       <div class="dv-screen" ref="dvScreen">
         <div class="box" :style="boxStyle">
           <div class="canvas" :style="canvasPanelStyle" ref="canvas">
-            <div class="canvas-panel">
-              <template v-for="transform in canvasMap">
+            <template v-for="transform in canvasMap">
+              <div
+                :key="transform.id"
+                class="preview-box"
+                :style="
+                  contentStyles(transform.setting.view, transform.setting.title)
+                "
+              >
                 <div
-                  :key="transform.id"
-                  class="preview-box"
-                  :style="contentStyles(transform.setting.view, transform.setting.title)"
+                  class="preview-wrap"
+                  :style="
+                    dvWrapperStyles(
+                      transform.setting.view,
+                      transform.setting.title
+                    )
+                  "
                 >
-                  <div
-                    class="preview-wrap"
-                    :style="dvWrapperStyles(transform.setting.view, transform.setting.title)"
-                  >
-                    <chart-nodata
-                      v-if="transform.setting.isEmpty"
-                      :config="transform.setting.config"
-                    ></chart-nodata>
-                    <!-- 图形 -->
-                    <ChartFigure
-                      v-else-if="transform.setting.name === 'figure'"
-                      :setting="transform.setting"
-                    />
-                    <!--素材库-->
-                    <ChartMaterial
-                      v-else-if="transform.setting.name === 'material'"
-                      :url="transform.setting.url"
-                    ></ChartMaterial>
-                    <!--进度条-->
-                    <SteepBar
-                      v-else-if="transform.setting.name === 'steepBar'"
-                      :config="transform.setting.config"
-                      :background="transform.setting.background"
-                      :api-data="transform.setting.api_data"
-                    ></SteepBar>
-                    <!-- 文本 -->
-                    <chart-text
-                      v-else-if="transform.setting.name === 've-text'"
-                      :text-data="transform.setting"
-                    ></chart-text>
+                  <chart-nodata
+                    v-if="transform.setting.isEmpty"
+                    :config="transform.setting.config"
+                  ></chart-nodata>
+                  <!-- 图形 -->
+                  <ChartFigure
+                    v-else-if="transform.setting.name === 'figure'"
+                    :setting="transform.setting"
+                  />
+                  <!--素材库-->
+                  <ChartMaterial
+                    v-else-if="transform.setting.name === 'material'"
+                    :url="transform.setting.url"
+                  ></ChartMaterial>
+                  <!--进度条-->
+                  <SteepBar
+                    v-else-if="transform.setting.name === 'steepBar'"
+                    :config="transform.setting.config"
+                    :background="transform.setting.background"
+                    :api-data="transform.setting.api_data"
+                  ></SteepBar>
+                  <!-- 文本 -->
+                  <chart-text
+                    v-else-if="transform.setting.name === 've-text'"
+                    :text-data="transform.setting"
+                  ></chart-text>
 
-                    <!-- 图片 -->
-                    <chart-image
-                      v-else-if="transform.setting.name === 've-image'"
-                      :image-data="transform.setting"
-                    ></chart-image>
+                  <!-- 图片 -->
+                  <chart-image
+                    v-else-if="transform.setting.name === 've-image'"
+                    :image-data="transform.setting"
+                  ></chart-image>
 
-                    <!-- 表格 -->
-                    <chart-tables
-                      ref="tables"
-                      v-else-if="transform.setting.name === 've-tables'"
-                      :table-data="transform.setting"
-                      :is-mobile="isMobile"
-                      @mouseenter.native="
-                        hideBar(
-                          transform.setting.view.y,
-                          transform.setting.view.height
-                        )
-                      "
-                      @mouseleave.native="existTab = true"
-                    ></chart-tables>
-                    <!-- 立体饼图 -->
-                    <high-charts
-                      v-else-if="transform.setting.name === 'high-pie'"
-                      :key="transform.id"
-                      :setting="transform.setting"
-                      :api-data="transform.setting.api_data"
-                      :background="transform.setting.background"
-                    ></high-charts>
-                    <!-- 矩形热力图 -->
-                    <chart-heart
-                      v-else-if="transform.setting.name === 've-heatmap'||transform.setting.name === 've-sun'"
-                      :key="transform.id"
-                      :view="transform.setting.view"
-                      :config="transform.setting.config"
-                      :api-data="transform.setting.api_data"
-                      :background="transform.setting.background"
-                    ></chart-heart>
-                    <charts-factory
-                      v-else
-                      :chart-data="transform.setting"
-                    ></charts-factory>
-                  </div>
+                  <!-- 表格 -->
+                  <chart-tables
+                    ref="tables"
+                    v-else-if="transform.setting.name === 've-tables'"
+                    :table-data="transform.setting"
+                    :is-mobile="isMobile"
+                    @mouseenter.native="
+                      hideBar(
+                        transform.setting.view.y,
+                        transform.setting.view.height
+                      )
+                    "
+                    @mouseleave.native="existTab = true"
+                  ></chart-tables>
+                  <!-- 立体饼图 -->
+                  <high-charts
+                    v-else-if="transform.setting.name === 'high-pie'"
+                    :key="transform.id"
+                    :setting="transform.setting"
+                    :api-data="transform.setting.api_data"
+                    :background="transform.setting.background"
+                  ></high-charts>
+                  <!-- 矩形热力图 -->
+                  <chart-heart
+                    v-else-if="
+                      transform.setting.name === 've-heatmap' ||
+                        transform.setting.name === 've-sun'
+                    "
+                    :key="transform.id"
+                    :view="transform.setting.view"
+                    :config="transform.setting.config"
+                    :api-data="transform.setting.api_data"
+                    :background="transform.setting.background"
+                  ></chart-heart>
+                  <charts-factory
+                    v-else
+                    :chart-data="transform.setting"
+                  ></charts-factory>
                 </div>
-              </template>
+              </div>
+            </template>
+            <div
+              class="pagination fullscreen"
+              v-if="checkFull()"
+              v-show="existTab"
+              :style="{ opacity: showPageTab ? 1 : 0 }"
+              @mouseover="handleTabShow"
+              @mouseleave="handleTabShow"
+            >
+              <div
+                v-for="page in tabList"
+                :key="page.id"
+                @click="toOtherPage(page.id)"
+              >
+                <div
+                  :class="['page', { 'current-select': tabSelect === page.id }]"
+                >
+                  {{ page.name }}
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div
-        class="pagination"
-        v-show="existTab"
-        :style="{ opacity: showPageTab ? 1 : 0 }"
-        @mouseover="handleTabShow"
-        @mouseleave="handleTabShow"
-      >
-        <div
-          v-for="page in tabList"
-          :key="page.id"
-          @click="toOtherPage(page.id)"
-        >
-          <div :class="['page', { 'current-select': tabSelect === page.id }]">
-            {{ page.name }}
-          </div>
+    </div>
+    <div
+      class="pagination"
+      v-if="!checkFull()"
+      v-show="existTab"
+      :style="{ opacity: showPageTab ? 1 : 0 }"
+      @mouseover="handleTabShow"
+      @mouseleave="handleTabShow"
+    >
+      <div v-for="page in tabList" :key="page.id" @click="toOtherPage(page.id)">
+        <div :class="['page', { 'current-select': tabSelect === page.id }]">
+          {{ page.name }}
         </div>
       </div>
     </div>
@@ -167,8 +192,8 @@ import SteepBar from "./components/steepBar.vue"
 import ChartMaterial from "./components/Material.vue"
 import ChartFigure from "./components/Figure.vue"
 
-import HighCharts from './components/highcharts.vue'
-import ChartHeart from './components/chart-heat.vue'
+import HighCharts from "./components/highcharts.vue"
+import ChartHeart from "./components/chart-heat.vue"
 
 const spacing = 20
 export default {
@@ -195,6 +220,12 @@ export default {
   },
   mounted() {
     window.onresize = () => {
+      if (!this.checkFull()) {
+        this.$nextTick(() => {
+          var docElm = document.querySelector(".dv-screen")
+          docElm.className = "dv-screen"
+        })
+      }
       if (Object.keys(this.screenData).length > 0) {
         this.canvasMap = []
         if (this.password) {
@@ -204,6 +235,7 @@ export default {
         }
       }
     }
+    window.addEventListener("keydown", this.KeyDown, true)
   },
   created() {
     let url = window.location.href
@@ -212,7 +244,7 @@ export default {
     // 政数局链接
     // this.url = "http://19.192.2.67:8085/admin/dev-api/" + url.slice(index)
     // 测试连接
-    // this.url = "http://47.115.14.69:8090/share/E3eMVz"
+    // this.url = "http://10.10.20.66:8080/share/YB7ZNn"
 
     console.log(this.url)
     this.getData()
@@ -285,22 +317,20 @@ export default {
       }
     },
     contentStyles(transformData, title) {
-      if (title === '直线') {
+      if (title === "直线") {
         return {
-          width: transformData.width + 'px',
-          height: transformData.height + 'px',
-          transformOrigin: 'left center',
+          width: transformData.width + "px",
+          height: transformData.height + "px",
+          transformOrigin: "left center",
           transform: `translate3d(${transformData.x}px,${
             transformData.y
           }px,0) rotate(${transformData.rotate || 0}deg)`
         }
       } else {
         return {
-          width: transformData.width + 'px',
-          height: transformData.height + 'px',
-          transform: `translate3d(${transformData.x}px,${
-            transformData.y
-          }px,0)`
+          width: transformData.width + "px",
+          height: transformData.height + "px",
+          transform: `translate3d(${transformData.x}px,${transformData.y}px,0)`
         }
       }
     },
@@ -391,6 +421,41 @@ export default {
     },
     handleTabShow() {
       this.showPageTab = !this.showPageTab
+    },
+    KeyDown(event) {
+      if (event.keyCode === 122) {
+        event.returnValue = false
+        this.fullScreen()
+      }
+    },
+    fullScreen() {
+      var docElm = document.querySelector(".dv-screen")
+      docElm.className = "dv-screen fullscreen"
+      if (docElm) {
+        if (docElm.requestFullscreen) {
+          // W3C
+          docElm.requestFullscreen()
+        } else if (docElm.mozRequestFullScreen) {
+          // FireFox
+          docElm.mozRequestFullScreen()
+        } else if (docElm.webkitRequestFullScreen) {
+          // Chrome等
+          docElm.webkitRequestFullScreen()
+        } else if (docElm.msRequestFullscreen) {
+          // IE11
+          docElm.msRequestFullscreen()
+        }
+      }
+    },
+    checkFull() {
+      let isFull =
+        window.fullScreen ||
+        document.webkitIsFullScreen ||
+        document.msFullscreenEnabled
+      if (isFull === undefined) {
+        isFull = false
+      }
+      return isFull
     }
   },
   components: {
@@ -403,7 +468,7 @@ export default {
     ChartMaterial,
     ChartFigure,
     HighCharts,
-    ChartHeart,
+    ChartHeart
   }
 }
 </script>

@@ -11,6 +11,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  background: black;
+}
+.dv-screen.fullscreen {
+  overflow: hidden;
 }
 .dv-screen.hasTab {
   height: calc(100vh - 84px);
@@ -153,9 +157,12 @@
   display: flex;
   background: white;
   color: black;
-  width: 100vw;
+  width: 100%;
   overflow-y: hidden;
   overflow-x: scroll;
+}
+.pagination.fullscreen {
+  position: absolute;
 }
 
 .pagination::-webkit-scrollbar {

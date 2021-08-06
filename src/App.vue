@@ -244,7 +244,7 @@ export default {
     // 政数局链接
     // this.url = "http://19.192.2.67:8085/admin/dev-api/" + url.slice(index)
     // 测试连接
-    // this.url = "http://10.10.20.66:8080/share/YB7ZNn"
+    // this.url = "http://10.10.20.66:8080/share/BFjuey"
 
     console.log(this.url)
     this.getData()
@@ -359,7 +359,7 @@ export default {
     setData(data) {
       this.screenData = data
       this.pageSettings = this.screenData.setting
-      this.pageSettings.height = this.pageSettings.height // 防止底部栏显示的时候盖住控件滚动轴
+      this.pageSettings.height = this.pageSettings.height + 50 // 防止底部栏显示的时候盖住控件滚动轴
       if (this.tabList.length === 0) {
         this.tabList = this.screenData.screenTabList
         this.tabSelect = this.tabList[0].id // 默认显示第一页的内容

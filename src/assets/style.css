@@ -5,7 +5,8 @@
   vertical-align: center;
 }
 .dv-screen {
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
   height: 100vh;
   width: 100vw;
   display: flex;
@@ -46,10 +47,7 @@
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.4);
   background-color: rgba(0, 0, 0, 0.01);
 }
-.dv-screen .canvas-panel {
-  position: relative;
-}
-.dv-screen .canvas-panel .preview-box {
+.dv-screen .canvas .preview-box {
   position: absolute;
 }
 .scrollbar::-webkit-scrollbar {
@@ -85,7 +83,6 @@
   margin: auto;
 }
 .canvas {
-  position: absolute;
   transform-origin: 0 0;
   overflow: hidden;
 }
@@ -123,32 +120,6 @@
   overflow: hidden;
   user-select: none;
   background: #26282d url("../assets/images/dot.png") repeat;
-}
-.canvas .canvas-main .canvas-panel-wrap {
-  width: 100%;
-  height: calc(100% - 30px);
-  overflow: hidden;
-  position: relative;
-}
-.canvas .canvas-main .canvas-panel-wrap .screen-shot {
-  position: relative;
-}
-.canvas .canvas-main .canvas-panel-wrap .screen-shot .canvas-panel {
-  position: absolute;
-  transform-origin: 0 0;
-  top: 60px;
-  left: 45px;
-  transition: 0.2s all ease-in-out;
-  background-size: cover, contain;
-  background-position: center, right bottom;
-  background-repeat: no-repeat, no-repeat;
-  box-shadow: rgba(0, 0, 0, 0.5) 0 0 30px 0;
-  line-height: 1.5;
-}
-.canvas .canvas-main .canvas-panel-wrap .screen-shot .canvas-panel .drop-panel {
-  width: 100%;
-  height: 100%;
-  background-size: cover;
 }
 .pagination {
   position: fixed;

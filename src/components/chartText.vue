@@ -3,7 +3,7 @@
     <div
       class="dv-text"
       ref="text"
-      v-html="textData.config.title.text"
+      v-html="textData.config.title.text || textData.config.text || textData.config.title.htmlText"
       :style="contentStyle"
     ></div>
   </div>

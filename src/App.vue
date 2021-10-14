@@ -96,12 +96,9 @@
               </div>
             </template>
             <div
-              class="pagination fullscreen"
-              v-if="checkFull()"
+              :class="['pagination', { hoverable: showPageTab }]"
+              v-if="isFull"
               v-show="existTab"
-              :style="{ opacity: showPageTab ? 1 : 0 }"
-              @mouseover="handleTabShow"
-              @mouseleave="handleTabShow"
             >
               <div
                 v-for="page in tabList"
@@ -120,12 +117,9 @@
       </div>
     </div>
     <div
-      class="pagination"
-      v-if="!checkFull()"
+      :class="['pagination', { hoverable: showPageTab }]"
+      v-if="!isFull"
       v-show="existTab"
-      :style="{ opacity: showPageTab ? 1 : 0 }"
-      @mouseover="handleTabShow"
-      @mouseleave="handleTabShow"
     >
       <div v-for="page in tabList" :key="page.id" @click="toOtherPage(page.id)">
         <div :class="['page', { 'current-select': tabSelect === page.id }]">
@@ -215,7 +209,8 @@ export default {
       code: "", // 状态码，判断显示图片
       boxStyle: {},
       showPageTab: true, //页签显示/隐藏
-      existTab: true // 页签元素显示/隐藏
+      existTab: true, // 页签元素显示/隐藏
+      isFull: false // 是否全屏状态
     }
   },
   mounted() {
@@ -373,14 +368,14 @@ export default {
         this.getRange()
         this.getBoxStyle()
         // pc端设置5s后隐藏页签栏
-        if (!this.isMobile) {
-          let timer = null
-          timer = setTimeout(() => {
-            this.showPageTab = false
-            clearTimeout(timer)
-            timer = null
-          }, 5000)
-        }
+        // if (!this.isMobile) {
+        //   let timer = null
+        //   timer = setTimeout(() => {
+        //     this.showPageTab = false
+        //     clearTimeout(timer)
+        //     timer = null
+        //   }, 5000)
+        // }
       })
     },
     resetGraphsData() {
@@ -430,7 +425,7 @@ export default {
     },
     fullScreen() {
       var docElm = document.querySelector(".dv-screen")
-      docElm.className = "dv-screen fullscreen"
+      docElm.className = "dv-screen"
       if (docElm) {
         if (docElm.requestFullscreen) {
           // W3C
@@ -455,6 +450,7 @@ export default {
       if (isFull === undefined) {
         isFull = false
       }
+      this.isFull = isFull
       return isFull
     }
   },
@@ -472,4 +468,4 @@ export default {
   }
 }
 </script>
-<style src="./assets/style.css"></style>
+<style src="./assets/style-app.css"></style>

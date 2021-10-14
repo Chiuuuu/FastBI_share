@@ -46,7 +46,10 @@ module.exports = {
 
   build: {
     // Template for index.html
-    index: path.resolve(__dirname, "../dist/index.html"),
+    index: [
+      { chunks: ['vendor', 'manifest', 'app'], filename: 'index.html', template: 'index.html' },
+      { chunks: ['vendor', 'manifest', 'list'], filename: 'list.html', template: 'list.html' }
+    ],
 
     // Paths
     assetsRoot: path.resolve(__dirname, "../dist"),

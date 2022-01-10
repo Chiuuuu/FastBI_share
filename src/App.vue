@@ -7,6 +7,7 @@
             <template v-for="transform in canvasMap">
               <div
                 :key="transform.id"
+                :id="transform.id"
                 class="preview-box"
                 :style="
                   contentStyles(transform.setting.view, transform.setting.title)
@@ -241,7 +242,6 @@ export default {
     // 测试连接
     // this.url = "http://10.10.20.66:8080/share/BFjuey"
 
-    console.log(this.url)
     this.getData()
   },
   computed: {
@@ -359,7 +359,7 @@ export default {
         this.tabList = this.screenData.screenTabList
         this.tabSelect = this.tabList[0].id // 默认显示第一页的内容
       }
-      this.canvasMap = this.screenData.screenGraphs
+      this.canvasMap = this.screenData.screenGraphs.sort((a, b) => a.setting.sortIndex - b.setting.sortIndex)
       // 移动端(支持触摸事件)// 移动端按原本样式显示
       //   if (this.isMobile) {
       //     this.resetGraphsData()

@@ -14,3 +14,7 @@ import './antd'
 Vue.use(VCharts);
 Vue.config.productionTip = false;
 Vue.prototype.$echarts = Echarts
+Vue.prototype.$REAL_SIZE = function (num) {
+  const size = document.documentElement.style.fontSize || 37.5
+  return Math.ceil(num / 37.5 / 2) * parseFloat(size)
+}

@@ -31,7 +31,7 @@ export default {
       type: Function,
     },
     pagination: {
-      // 分页数据{ pageNo: 页码, pageSize: 单页条数, rowsNum: 从条数 }
+      // 分页数据{ current: 页码, pageSize: 单页条数, total: 从条数 }
       type: Object,
       default() {
         return [];
@@ -58,7 +58,7 @@ export default {
       this.initScrollData();
     },
     // 总数传入为0会被视为重置数据
-    'pagination.rowsNum'(v) {
+    'pagination.total'(v) {
       if (v === 0) {
         this.scrollDirection = '';
         this.pageData = [];
@@ -79,10 +79,10 @@ export default {
      * @description 每次数据变化, 初始化滚动数据
      */
     initScrollData() {
-      const { pageNo, rowsNum, pageSize } = this.pagination;
-      this.totalPage = Math.ceil(rowsNum / pageSize);
+      const { current, total, pageSize } = this.pagination;
+      this.totalPage = Math.ceil(total / pageSize);
       // 初始化状态
-      if (pageNo === 1 && !this.scrollDirection) {
+      if (current === 1 && !this.scrollDirection) {
         this.pageData = this.doWithPageData(1, this.rows);
         this.$emit('change', this.pageData);
       }
@@ -92,13 +92,13 @@ export default {
      */
     async handleScroll(e) {
       if (this.scrolling) return;
-      let { pageNo, pageSize } = this.pagination;
+      let { current, pageSize } = this.pagination;
       const area = e.target;
       const lastScrollTop = this.lastScrollTop;
       const cellHeight = parseInt(this.rowHeight);
       const { scrollTop, scrollHeight } = area;
       const clientHeight = area.clientHeight;
-      const lastPageNo = pageNo;
+      const lastPageNo = current;
 
       // 临界距离取当前高度的1/3或者10个单元格的高
       const distance = Math.min(clientHeight / 3, cellHeight * 10);
@@ -109,16 +109,16 @@ export default {
 
         // 上次向下滚, 则间距为limit
         if (this.scrollDirection === 'down') {
-          pageNo = pageNo - this.limit;
+          current = current - this.limit;
         } else {
-          pageNo--;
+          current--;
         }
         this.scrollDirection = 'up';
-        if (pageNo < 1) {
-          pageNo = 1;
+        if (current < 1) {
+          current = 1;
         } else {
           this.scrolling = true;
-          await this.fetch(pageNo);
+          await this.fetch(current);
           this.scrolling = false;
           this.$nextTick(() => {
             this.pageData = this.doWithPageData(lastPageNo, this.rows);
@@ -131,16 +131,16 @@ export default {
 
         // 上次向上滚, 则间距为limit
         if (this.scrollDirection === 'up') {
-          pageNo = pageNo + this.limit;
+          current = current + this.limit;
         } else {
-          pageNo++;
+          current++;
         }
         this.scrollDirection = 'down';
-        if (pageNo > this.totalPage) {
-          pageNo = this.totalPage;
+        if (current > this.totalPage) {
+          current = this.totalPage;
         } else {
           this.scrolling = true;
-          await this.fetch(pageNo);
+          await this.fetch(current);
           this.scrolling = false;
           this.$nextTick(() => {
             this.pageData = this.doWithPageData(lastPageNo, this.rows);
@@ -158,12 +158,12 @@ export default {
      * @param {Array} data 数据
      */
     doWithPageData(lastPageNo, data) {
-      const { pageNo, pageSize } = this.pagination;
+      const { current, pageSize } = this.pagination;
       const rows = this.pageData.length ? this.pageData : this.rows || [];
       // 向上滚动, 截取之前数据的前半部分, 并在头部插入
-      if (pageNo < lastPageNo) {
+      if (current < lastPageNo) {
         return data.concat(rows.slice(0, pageSize));
-      } else if (pageNo > lastPageNo) {
+      } else if (current > lastPageNo) {
         // 非切割模式, 直接拼接数据
         if (this.limit === 0) {
           return rows.concat(data);

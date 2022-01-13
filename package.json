@@ -17,7 +17,8 @@
     "lib-flexible": "^0.3.2",
     "lodash": "^4.17.21",
     "v-charts": "^1.19.0",
-    "vue": "^2.5.2"
+    "vue": "^2.5.2",
+    "vue-router": "^3.5.3"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

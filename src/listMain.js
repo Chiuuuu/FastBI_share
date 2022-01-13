@@ -1,10 +1,14 @@
 import './base'
 import Vue from "vue";
 import List from "./List";
+import service from "./api"
+import router from './router'
+
+Vue.prototype.$api = service
 
 /* eslint-disable no-new */
 new Vue({
-  el: "#list",
-  components: { List },
-  template: "<List/>"
-});
+  router,
+  render: h => h(List)
+}).$mount('#list');
+

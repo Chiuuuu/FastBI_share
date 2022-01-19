@@ -12,7 +12,7 @@
 import axios from 'axios'
 
 const service = axios.create({
-  baseURL: process.env.NODE_ENV === 'development' ? '/admin/dev-api/' : 'http://10.10.20.102:8080',
+  baseURL: process.env.NODE_ENV === 'development' ? 'http://10.10.20.102:8080' : '/admin/dev-api/',
   headers: {
     'X-Requested-With': 'XMLHttpRequest'
   },

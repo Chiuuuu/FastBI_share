@@ -52,10 +52,10 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
     new webpack.NoEmitOnErrorsPlugin(),
     // https://github.com/ampedandwired/html-webpack-plugin
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: 'index.html',
-      inject: true
+    ...config.build.index.map(item => {
+      return new HtmlWebpackPlugin(Object.assign({
+        inject: true
+      }, item))
     }),
     // copy custom static assets
     new CopyWebpackPlugin([

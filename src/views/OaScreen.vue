@@ -130,12 +130,12 @@
     </div>
     <div class="pwdview" v-show="showBox === 'pwd'">
       <div class="title">
-        <img class="img" src="./assets/images/矢量智能对象.png" alt="" />
+        <img class="img" src="../assets/images/矢量智能对象.png" alt="" />
         <span class="text">智能大数据分析平台</span>
       </div>
       <div class="pwdbox">
         <div class="header">
-          <img class="img" src="./assets/images/head.png" alt="" />
+          <img class="img" src="../assets/images/head.png" alt="" />
           <span class="text">admin</span>
         </div>
         <div class="body">
@@ -160,13 +160,13 @@
         <img
           v-if="code === 501"
           class="img"
-          src="./assets/images/404.png"
+          src="../assets/images/404.png"
           alt=""
         />
         <img
           v-if="code === 502"
           class="image"
-          src="./assets/images/删除.png"
+          src="../assets/images/删除.png"
           alt=""
         />
         <div :class="['tip', { hasmargin: code === 502 }]">{{ msg }}</div>
@@ -178,21 +178,21 @@
 <script>
 import "ant-design-vue/lib/input/style/css"
 import axios from "axios"
-import chartImage from "./components/chartImage.vue"
-import chartTables from "./components/chartTables.vue"
-import chartText from "./components/chartText.vue"
-import chartsFactory from "./components/chartsFactory.vue"
-import ChartNodata from "./components/Nodata.vue"
-import SteepBar from "./components/steepBar.vue"
-import ChartMaterial from "./components/Material.vue"
-import ChartFigure from "./components/Figure.vue"
+import chartImage from "@/components/chartImage.vue"
+import chartTables from "@/components/chartTables.vue"
+import chartText from "@/components/chartText.vue"
+import chartsFactory from "@/components/chartsFactory.vue"
+import ChartNodata from "@/components/Nodata.vue"
+import SteepBar from "@/components/steepBar.vue"
+import ChartMaterial from "@/components/Material.vue"
+import ChartFigure from "@/components/Figure.vue"
 
-import HighCharts from "./components/highcharts.vue"
-import ChartHeart from "./components/chart-heat.vue"
+import HighCharts from "@/components/highcharts.vue"
+import ChartHeart from "@/components/chart-heat.vue"
 
 const spacing = 20
 export default {
-  name: "App",
+  name: "OaScreen",
   data() {
     return {
       url: "",
@@ -235,8 +235,8 @@ export default {
   },
   created() {
     let url = window.location.href
-    let index = url.indexOf("share")
-    this.url = url.slice(0, index) + "admin/dev-api/" + url.slice(index)
+    let index = url.lastIndexOf("/")
+    this.url = url.slice(index + 1)
     // 政数局链接
     // this.url = "http://19.192.2.67:8085/admin/dev-api/" + url.slice(index)
     // 测试连接
@@ -263,20 +263,20 @@ export default {
   },
   methods: {
     getData() {
-      axios.get(this.url).then(res => {
+      this.$api.oa.getScreenInfo(this.url).then(res => {
         // 大屏不存在或者已失效
-        if (res.data.code === 501 || res.data.code === 502) {
-          this.code = res.data.code
+        if (res.code === 501 || res.code === 502) {
+          this.code = res.code
           this.showBox = "empty"
-          this.msg = res.data.msg
+          this.msg = res.msg
           return
         }
         // 有设置密码
-        if (res.data.data === "needPwd") {
+        if (res.data === "needPwd") {
           this.showBox = "pwd"
           return
         }
-        this.setData(res.data.data)
+        this.setData(res.data)
       })
     },
     // 确认密码
@@ -289,12 +289,12 @@ export default {
         return
       }
       this.headers.Password = this.password
-      axios.get(this.url, { headers: this.headers }).then(res => {
-        if (res.data.code === 500) {
+      this.$api.oa.getScreenInfo(this.url, this.headers).then(res => {
+        if (res.code === 500) {
           this.error = true
         } else {
           this.showBox = ""
-          this.setData(res.data.data)
+          this.setData(res.data)
         }
       })
     },
@@ -348,7 +348,7 @@ export default {
           headers: this.headers
         })
         .then(res => {
-          this.setData(res.data.data)
+          this.setData(res.data)
         })
     },
     setData(data) {
@@ -468,4 +468,4 @@ export default {
   }
 }
 </script>
-<style src="./assets/style-app.css"></style>
+<style src="../assets/style-app.css"></style>

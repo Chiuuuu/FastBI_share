@@ -12,17 +12,17 @@ module.exports = {
     proxyTable: {
         "/admin/dev-api/*": {
           //代理
-          target: "http://47.115.14.69:8081", //服务端地址和端口
+          target: "http://10.10.20.102:8080", //服务端地址和端口
           changeOrigin: true, //启动代理
           pathRewrite: {
             //重写路径
-            "^admin/dev-api": ""
+            "^/admin/dev-api": ""
           }
-        }
+        },
     },
 
     // Various Dev Server settings
-    host: "localhost", // can be overwritten by process.env.HOST
+    host: "10.10.20.28", // can be overwritten by process.env.HOST
     port: 8081, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
@@ -46,7 +46,10 @@ module.exports = {
 
   build: {
     // Template for index.html
-    index: path.resolve(__dirname, "../dist/index.html"),
+    index: [
+      { chunks: ['vendor', 'manifest', 'app'], filename: 'index.html', template: 'index.html' },
+      { chunks: ['vendor', 'manifest', 'list'], filename: 'list.html', template: 'list.html' }
+    ],
 
     // Paths
     assetsRoot: path.resolve(__dirname, "../dist"),

@@ -131,9 +131,16 @@
   width: 100%;
   overflow-y: hidden;
   overflow-x: scroll;
+  z-index: 10;
 }
 .pagination.fullscreen {
   position: absolute;
+}
+.pagination.hoverable {
+  opacity: 0;
+}
+.pagination.hoverable:hover {
+  opacity: 1;
 }
 
 .pagination::-webkit-scrollbar {

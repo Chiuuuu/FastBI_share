@@ -1,5 +1,5 @@
 <template>
-  <div id="list">
+  <div id="listMain">
     <!-- 头部title(PC) -->
     <header v-if="isPC">
       <span>BI大屏列表</span>
@@ -13,17 +13,17 @@
     </header>
 
     <!-- 搜索栏 -->
-    <div class="search-area">
-      <div class="search-box" :class="isPC ? 'pc' : 'h5'">
-        <a-input-search
+    <div class="search-area" :class="isPC ? 'pc' : 'h5'">
+      <div class="search-box">
+        <a-input
           id="keyword"
           type="text"
           style="height:100%"
           placeholder="请输入大屏名称关键词搜索"
           autocomplete="off"
           v-model="screenName"
-          @search="handleSearch"
-        ></a-input-search>
+          @pressEnter="handleSearch"
+        ><a-icon slot="prefix" type="search" /></a-input>
       </div>
     </div>
 
@@ -39,14 +39,30 @@
         @change="v => (pageDataRows = v)"
       >
         <div class="screen-list-item js-item-height" v-for="item in pageDataRows" :key="item.id" @click="toShare(item)">
-          <div class="item-line">
-            <span class="item-name over-text">{{ item.screenName }}</span>
-            <span class="item-is-top" v-if="item.no > 0">置顶</span>
-          </div>
-          <div class="item-line over-text">
-            <span class="item-name over-text">{{ item.projectName }}</span>
-            <span>{{ item.gmtCreate }}</span>
-          </div>
+          <template v-if="isPC">
+            <div class="item-line">
+              <div class="item-line-self">
+                <div class="item-break">
+                  <span :title="item.screenName" class="item-name screen over-text">{{ item.screenName }}</span>
+                  <span class="item-is-top" v-if="item.no < 1">置顶</span>
+                </div>
+                <div class="item-break">
+                  <span :title="item.projectName" class="item-name over-text">{{ item.projectName }}</span>
+                </div>
+              </div>
+              <div>{{ item.gmtCreate }}</div>
+            </div>
+          </template>
+          <template v-else>
+            <div class="item-line">
+              <span :title="item.screenName" class="item-name screen over-text">{{ item.screenName }}</span>
+              <span class="item-is-top" v-if="item.no < 1">置顶</span>
+            </div>
+            <div class="item-line over-text">
+              <span :title="item.projectName" class="item-name over-text">{{ item.projectName }}</span>
+              <span>{{ item.gmtCreate }}</span>
+            </div>
+          </template>
         </div>
       </ScrollPage>
       <div v-else class="screen-list-empty">暂无数据</div>

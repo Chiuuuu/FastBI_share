@@ -3,7 +3,7 @@ import Vue from "vue"
 Vue.use(VueRouter)
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: process.env.NODE_ENV === 'development' ? 'hash' : 'history',
   base: process.env.NODE_ENV === 'development' ? '/' : '/oashare/',
   routes: [
     // {

@@ -58,7 +58,7 @@
               <span :title="item.screenName" class="item-name screen over-text">{{ item.screenName }}</span>
               <span class="item-is-top" v-if="item.no > 0">置顶</span>
             </div>
-            <div class="item-line over-text">
+            <div class="item-line small-size over-text">
               <span :title="item.projectName" class="item-name over-text">{{ item.projectName }}</span>
               <span>{{ item.gmtCreate }}</span>
             </div>

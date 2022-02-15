@@ -44,7 +44,7 @@
               <div class="item-line-self">
                 <div class="item-break">
                   <span :title="item.screenName" class="item-name screen over-text">{{ item.screenName }}</span>
-                  <span class="item-is-top" v-if="item.no < 1">置顶</span>
+                  <span class="item-is-top" v-if="item.no > 0">置顶</span>
                 </div>
                 <div class="item-break">
                   <span :title="item.projectName" class="item-name over-text">{{ item.projectName }}</span>
@@ -56,7 +56,7 @@
           <template v-else>
             <div class="item-line">
               <span :title="item.screenName" class="item-name screen over-text">{{ item.screenName }}</span>
-              <span class="item-is-top" v-if="item.no < 1">置顶</span>
+              <span class="item-is-top" v-if="item.no > 0">置顶</span>
             </div>
             <div class="item-line over-text">
               <span :title="item.projectName" class="item-name over-text">{{ item.projectName }}</span>

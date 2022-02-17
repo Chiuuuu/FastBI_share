@@ -61,6 +61,7 @@ export default {
     'pagination.total'(v) {
       if (v === 0) {
         this.scrollDirection = '';
+        this.lastScrollTop = 0;
         this.pageData = [];
         this.$emit('change', this.pageData);
       }
@@ -69,6 +70,7 @@ export default {
   data() {
     return {
       scrolling: false,
+      lastScrollTop: 0,
       totalPage: 0,
       pageData: [],
       scrollDirection: '',
@@ -144,7 +146,6 @@ export default {
           this.scrolling = false;
           this.$nextTick(() => {
             this.pageData = this.doWithPageData(lastPageNo, this.rows);
-            console.log(this.pageData)
             this.$emit('change', this.pageData);
             area.scrollTo(0, (this.pageData.length - this.rows.length) * cellHeight);
           });

@@ -75,7 +75,7 @@
 
 /*-----------------列表-------------------*/
 .screen-list {
-  height: calc(100% - 200px);
+  height: calc(100% - 400px);
   background: #fff;
   overflow-y: auto;
 }
@@ -125,6 +125,9 @@
 }
 .screen-list-item .item-line.small-size {
   font-size: 24px;
+}
+.screen-list-item .item-time {
+  flex-shrink: 0;
 }
 /* pc端 */
 .screen-list.pc .item-line {

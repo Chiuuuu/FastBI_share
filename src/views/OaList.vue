@@ -50,7 +50,7 @@
                   <span :title="item.projectName" class="item-name over-text">{{ item.projectName }}</span>
                 </div>
               </div>
-              <div>{{ item.gmtCreate }}</div>
+              <div class="item-time">{{ item.gmtCreate }}</div>
             </div>
           </template>
           <template v-else>
@@ -60,7 +60,7 @@
             </div>
             <div class="item-line small-size over-text">
               <span :title="item.projectName" class="item-name over-text">{{ item.projectName }}</span>
-              <span>{{ item.gmtCreate }}</span>
+              <span class="item-time">{{ item.gmtCreate }}</span>
             </div>
           </template>
         </div>
@@ -87,8 +87,8 @@ export default {
       pagination: {
         // 分页参数
         pageSize: 30,
-        pageNo: 1,
-        total: 1000,
+        current: 1,
+        total: 0,
       },
     };
   },
